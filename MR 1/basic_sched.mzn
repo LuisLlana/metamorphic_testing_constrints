@@ -11,8 +11,8 @@ array[TASK] of var 0..t: start;
 constraint forall(i in PREC)
    (
 %trace("start[\(pre[i,1])] + \(duration[pre[i,1]]) <= start[\(pre[i,2])]\n",
-    start[pre[i,1]] + duration[pre[i,1]] <= start[pre[i,2]])
-%)
+    start[pre[i,1]] + duration[pre[i,1]] <= start[pre[i,2]]
+)
 ;
 
 var 0..t: makespan = max(task in TASK)(start[task] + duration[task]);
