@@ -8,7 +8,7 @@ array[PREC,1..2] of TASK: pre;
 int: t = sum(duration);
 array[TASK] of var 0..t: start;
 
-constraint exists(i in PREC)
+constraint exists(i in PREC) % forall
    (
     start[pre[i,1]] + duration[pre[i,1]] <= start[pre[i,2]])
  ;
