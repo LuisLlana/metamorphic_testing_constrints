@@ -1,0 +1,8 @@
+/opt/minizinc/current/bin/minizinc benchmarks/data/data_psplib_follow_ups/M2/j30/J30_14_8_fu_cycle.dzn benchmarks/Mutants/mut-A2S-1.mzn
+Start times = [0, 0, 0, 0, 7, 14, 9, 4, 20, 16, 23, 14, 11, 13, 29, 21, 25, 18, 19, 9, 19, 21, 32, 34, 17, 20, 37, 41, 32, 32]
+makespan = 0
+----------
+==========
+OK
+total time: 0.1676183338277042 ms
+OK

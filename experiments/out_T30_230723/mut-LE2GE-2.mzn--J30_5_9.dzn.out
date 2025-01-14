@@ -1,0 +1,4 @@
+/opt/minizinc/current/bin/minizinc benchmarks/data/data_psplib/j30/J30_5_9.dzn benchmarks/Mutants/mut-LE2GE-2.mzn
+TIMEOUT
+total time: 30.01261559408158 ms
+OK

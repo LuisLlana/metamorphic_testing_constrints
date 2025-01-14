@@ -1,0 +1,16 @@
+/opt/minizinc/current/bin/minizinc benchmarks/data/data_psplib/j30/J30_22_1.dzn benchmarks/Mutants/mut-LT2EQ-1.mzn
+Warning: model inconsistency detected
+/home/soesteve/constraints/metamorphic_testing_constrints/experiments/benchmarks/Mutants/mut-LT2EQ-1.mzn:65.5-72.5
+  in call 'forall'
+  in array comprehension expression
+    with i = 3
+    with j = 3
+/home/soesteve/constraints/metamorphic_testing_constrints/experiments/benchmarks/Mutants/mut-LT2EQ-1.mzn:67.9-71.13
+  in if-then-else expression
+/home/soesteve/constraints/metamorphic_testing_constrints/experiments/benchmarks/Mutants/mut-LT2EQ-1.mzn:68.13-56
+  in binary '\/' operator expression
+
+=====UNSATISFIABLE=====
+OK
+total time: 0.16633794689550996 ms
+OK

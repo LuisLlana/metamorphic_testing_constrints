@@ -1,0 +1,5 @@
+/opt/minizinc/current/bin/minizinc benchmarks/data/data_psplib_follow_ups/M2/j30/J30_48_2_fu_cycle.dzn benchmarks/Mutants/mut-LT2LE-1.mzn
+=====UNSATISFIABLE=====
+OK
+total time: 0.27243903698399663 ms
+OK

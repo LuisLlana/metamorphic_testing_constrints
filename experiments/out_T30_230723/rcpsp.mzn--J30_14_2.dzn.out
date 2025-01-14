@@ -1,0 +1,4 @@
+/opt/minizinc/current/bin/minizinc benchmarks/data/data_psplib/j30/J30_14_2.dzn benchmarks/models/rcpsp.mzn
+TIMEOUT
+total time: 30.002638317644596 ms
+OK

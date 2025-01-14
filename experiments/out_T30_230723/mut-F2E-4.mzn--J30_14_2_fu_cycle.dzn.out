@@ -1,0 +1,9 @@
+/opt/minizinc/current/bin/minizinc benchmarks/data/data_psplib_follow_ups/M2/j30/J30_14_2_fu_cycle.dzn benchmarks/Mutants/mut-F2E-4.mzn
+Warning: model inconsistency detected
+/home/soesteve/constraints/metamorphic_testing_constrints/experiments/benchmarks/Mutants/mut-F2E-4.mzn:101.4-104.4
+  in call 'exists'
+
+=====UNSATISFIABLE=====
+OK
+total time: 0.166214382275939 ms
+OK

@@ -1,7 +1,7 @@
 import os
 import os.path
 import re
-import subprocess
+import subprocess, shlex
 import datetime
 import sys
 from multiprocessing import Pool
@@ -22,11 +22,31 @@ def execute_command(command, stdout=sys.stdout, stderr=sys.stderr):
     #_stdout=sys.stdout
     stdout.write(f'{command}\n')
     stdout.flush()
-    rcode=subprocess.call(command.split(), stdout=stdout,
-                          stderr=stderr,
-                          timeout=TIMEOUT)
+
+    ini = time.perf_counter()
+    process = subprocess.Popen(shlex.split(command),
+                               stdout=stdout,
+                               stderr=stderr)
+    try:
+        process.wait(TIMEOUT)
+        stdout.write('OK\n')
+    except subprocess.TimeoutExpired:
+        process.terminate()
+        stdout.write(f'TIMEOUT\n')
+    finally:
+        end = time.perf_counter()
+        stdout.write(f'total time: {end-ini} ms\n')
     log(f'{command} stop')
-    return rcode
+
+def need_testing(filename):
+    nt = True
+    try:
+        with open(filename) as fl:
+            contents = fl.read()
+        nt = contents.find("TIMEOUT") > 0
+    except Exception:
+        pass
+    return nt
 
 def execute_test(params):
     model, data = params
@@ -34,16 +54,12 @@ def execute_test(params):
     basedata = os.path.basename(data).strip()
     print(f'processsing {basemodel}--{basedata}')
     outfile = f'{OUTDIR}/{basemodel}--{basedata}.out'
-    with open(outfile, 'w' ) as out:
-        ini = time.perf_counter()
-        try:
+    if need_testing(outfile):
+        with open(outfile, 'w' ) as out:
             execute_command(f'{MINIZINC} {data.strip()} {model.strip()}', out, out)
-            end = time.perf_counter()
             out.write(f'OK\n')
-        except subprocess.TimeoutExpired:
-            out.write(f'TIMEOUT\n')
-        finally:
-            out.write(f'total time: {end-ini} ms\n')
+    else:
+        print('already run')
 
 def main(model_file, data_file):
     with open(data_file) as dfile:

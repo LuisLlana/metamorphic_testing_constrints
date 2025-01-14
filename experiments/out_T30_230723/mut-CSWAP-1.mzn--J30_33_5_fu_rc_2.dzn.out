@@ -1,0 +1,14 @@
+/opt/minizinc/current/bin/minizinc benchmarks/data/data_psplib_follow_ups/M4/j30/J30_33_5_fu_rc_2.dzn benchmarks/Mutants/mut-CSWAP-1.mzn
+Error: type error: no function or predicate with this signature found: `cumulative(array[int] of var int,array[int] of int,int,array[int] of int)'
+Cannot use the following functions or predicates with the same identifier:
+predicate cumulative(array [int] of var int: s,array [int] of var int: d,array [int] of var int: r,var int: b);
+    (argument 3 expects type array[int] of var int, but type int given)
+    (argument 4 expects type var int, but type array[int] of int given)
+predicate cumulative(array [int] of var opt int: s,array [int] of var int: d,array [int] of var int: r,var int: b);
+    (argument 3 expects type array[int] of var int, but type int given)
+    (argument 4 expects type var int, but type array[int] of int given)
+
+/home/soesteve/constraints/metamorphic_testing_constrints/experiments/benchmarks/Mutants/mut-CSWAP-1.mzn:86.17-91.47
+OK
+total time: 0.1163031067699194 ms
+OK

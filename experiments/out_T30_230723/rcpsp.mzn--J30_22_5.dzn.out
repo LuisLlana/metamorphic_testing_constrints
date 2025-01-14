@@ -1,0 +1,8 @@
+/opt/minizinc/current/bin/minizinc benchmarks/data/data_psplib/j30/J30_22_5.dzn benchmarks/models/rcpsp.mzn
+Start times = [0, 0, 8, 10, 13, 17, 8, 20, 17, 32, 22, 19, 26, 19, 32, 19, 10, 26, 38, 32, 36, 27, 43, 38, 29, 42, 43, 44, 45, 46]
+makespan = 52
+----------
+==========
+OK
+total time: 0.22648570593446493 ms
+OK
