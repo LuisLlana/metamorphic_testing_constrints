@@ -15,7 +15,7 @@ def subsumes(comparisons, other_comparisons):
 
     >>> subsumes([], [])
     True
-    >>> subsumes([0], [1])
+    >>> subsumes([1], [0])
     False
     >>> subsumes([0], [0])
     True
