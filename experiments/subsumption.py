@@ -84,6 +84,7 @@ def compute_subsuming(rows, mutant_column='Mutant', ignore_columns=['Result']):
             'subsumedMutants': {
                 str(other_comparisons): other_mutant
                 for other_comparisons, other_mutant in subsumedMutants.items()
+                if other_mutant != mostSubsumingMutant[1]
             }
         }
         for subsumedMutant in mostSubsumedMutants.keys():
