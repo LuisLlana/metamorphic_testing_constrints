@@ -4,7 +4,6 @@ import csv
 from collections import defaultdict
 import yaml
 
-
 def subsumes(comparisons, other_comparisons):
     """
     Computes whether the left mutant subsumes the other, that is, if
@@ -32,7 +31,7 @@ def subsumes(comparisons, other_comparisons):
     return all(other_comparisons[i] == 1 if comparisons[i] == 1 else True for i in range(len(comparisons)))
 
 
-def compute_subsuming(rows, mutant_column='Mutant', ignore_columns=['Result']):
+def compute_subsuming(all_results):
     """
     Classifies the mutants into duplicate, alive, and subsuming. Uses
     the algorithm discussed in:
@@ -45,9 +44,9 @@ def compute_subsuming(rows, mutant_column='Mutant', ignore_columns=['Result']):
     """
     # Preprocess the data (use mutant ID column and ignore some columns)
     grouped_by_row = defaultdict(lambda: [])
-    for row in rows:
-        comparison_columns = tuple(int(v) for k, v in row.items() if k != mutant_column and k not in ignore_columns)
-        grouped_by_row[comparison_columns].append(row[mutant_column])
+    for mutant, comparisons in all_results.items():
+        comparison_columns = tuple(comparisons.values())
+        grouped_by_row[comparison_columns].append(mutant)
 
     # Divide into live/duplicate/subsuming mutants
     grouped_by_status = {
@@ -99,18 +98,51 @@ def compute_subsuming_from_file(f_csv, delimiter):
     return compute_subsuming(reader)
 
 
+def read_all_csvs(csv_files, delimiter, mutant_column, exclude_columns):
+    """
+    Reads one or more CSVs in this format:
+
+      Mutant;test1;test2;...;testN;excluded1;...;excludedM
+      mut-op-loc;1;0;...;0;abc;...;xyz
+    
+    Produces a map of this form:
+
+      {"mut-op-loc": {"0-test1": 1, "0-test2": 0, ..., "0-testN": 0}}
+    
+    Test entries will be prefixed with the position of the CSV file they
+    came from.
+    """
+    all_results = defaultdict(lambda: {})
+    for i_file, csv_file in enumerate(csv_files):
+        with open(csv_file, 'r') as f_csv:
+            reader = csv.DictReader(f_csv, delimiter=delimiter)
+            for row in reader:
+                all_results[row[mutant_column]].update({
+                    '{}-{}'.format(i_file, k): int(v)
+                    for k, v in row.items()
+                    if k != mutant_column and k not in exclude_columns
+                })
+
+    return all_results
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(
         prog='subsumption.py',
         description='Classifies mutants into duplicate, alive, and subsuming mutants'
     )
-    parser.add_argument('csv_file')
+    parser.add_argument('csv_files', nargs='+')
     parser.add_argument('-d', '--delimiter', type=str, default=';')
     parser.add_argument('-o', '--output', type=str, default='output.yaml')
+    parser.add_argument('-m', '--mutant-column', type=str, default='Mutant')
+    parser.add_argument('-x', '--exclude-column', type=str, nargs='+', default=['Result'])
 
     args = parser.parse_args()
-    with open(args.csv_file, 'r') as f_csv:
-        subsuming = compute_subsuming_from_file(f_csv, delimiter=args.delimiter)
+    all_results = read_all_csvs(args.csv_files,
+        delimiter=args.delimiter,
+        mutant_column=args.mutant_column,
+        exclude_columns=args.exclude_column)
+
+    subsuming = compute_subsuming(all_results)
     with open(args.output, 'w') as f_yaml:
         print(yaml.dump(subsuming), file=f_yaml)
