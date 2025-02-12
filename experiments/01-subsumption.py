@@ -2,6 +2,7 @@
 
 import csv
 from collections import defaultdict
+import os
 import yaml
 
 def subsumes(comparisons, other_comparisons):
@@ -128,7 +129,7 @@ def read_all_csvs(csv_files, delimiter, mutant_column, exclude_columns):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(
-        prog='subsumption.py',
+        prog=os.path.basename(__file__),
         description='Classifies mutants into duplicate, alive, and subsuming mutants'
     )
     parser.add_argument('csv_files', nargs='+')
