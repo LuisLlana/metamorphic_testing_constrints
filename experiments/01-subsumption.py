@@ -3,6 +3,7 @@
 import csv
 from collections import defaultdict
 import os
+import random
 import yaml
 
 def subsumes(comparisons, other_comparisons):
@@ -32,7 +33,7 @@ def subsumes(comparisons, other_comparisons):
     return all(other_comparisons[i] == 1 if comparisons[i] == 1 else True for i in range(len(comparisons)))
 
 
-def compute_subsuming(all_results):
+def compute_subsuming(all_results, sample_duplicated):
     """
     Classifies the mutants into duplicate, alive, and subsuming. Uses
     the algorithm discussed in:
@@ -59,6 +60,10 @@ def compute_subsuming(all_results):
         if all(cmp == 0 for cmp in comparisons):
             grouped_by_status['alive'].extend(mutants)
         elif len(mutants) > 1:
+            if sample_duplicated:
+                random_element = random.choice(mutants)
+                grouped_by_status['subsuming'][comparisons] = random_element
+                mutants.remove(random_element)
             grouped_by_status['duplicated'][str(comparisons)] = mutants
         else:
             grouped_by_status['subsuming'][comparisons] = mutants.pop()
@@ -83,12 +88,12 @@ def compute_subsuming(all_results):
             'mutant': mostSubsumingMutant[1],
             'subsumedMutants': {
                 str(other_comparisons): other_mutant
-                for other_comparisons, other_mutant in subsumedMutants.items()
+                for other_comparisons, other_mutant in mostSubsumedMutants.items()
                 if other_mutant != mostSubsumingMutant[1]
             }
         }
-        for subsumedMutant in mostSubsumedMutants.keys():
-            del subsuming[subsumedMutant]
+        for comparisons in mostSubsumedMutants.keys():
+            del subsuming[comparisons]
 
     grouped_by_status['subsuming'] = maximalSubsuming
     return grouped_by_status
@@ -137,6 +142,7 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', type=str, default='output.yaml')
     parser.add_argument('-m', '--mutant-column', type=str, default='Mutant')
     parser.add_argument('-x', '--exclude-column', type=str, nargs='+', default=['Result'])
+    parser.add_argument('-s', '--sample-duplicated', action='store_true', help="Randomly samples among mutants with duplicated rows, instead of separating them")
 
     args = parser.parse_args()
     all_results = read_all_csvs(args.csv_files,
@@ -144,6 +150,6 @@ if __name__ == '__main__':
         mutant_column=args.mutant_column,
         exclude_columns=args.exclude_column)
 
-    subsuming = compute_subsuming(all_results)
+    subsuming = compute_subsuming(all_results, sample_duplicated=args.sample_duplicated)
     with open(args.output, 'w') as f_yaml:
         print(yaml.dump(subsuming), file=f_yaml)
