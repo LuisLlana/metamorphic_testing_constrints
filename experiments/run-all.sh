@@ -28,4 +28,8 @@ for i in `seq -w 1 30`; do
 done
 
 # Computes operator statistics (across all tests)
-python 02-operators.py V8_killed_all.yaml --output V8_operatorStats_all.csv
+python 02-operators.py V8_killed_all.yaml --output V8_operatorStats_noDups.csv
+
+# Computes times each operator is part of the subsuming operators set
+python 03-within-subsuming.py V8_operatorStats_noDups.csv --output V8_inSubsuming_noDups.csv
+python 03-within-subsuming.py sample-duplicated/*-stats.csv --output V8_inSubsuming_sampleDups.csv
