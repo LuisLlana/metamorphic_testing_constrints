@@ -48,8 +48,17 @@ OPERATOR_SETS = [
 
 def generate_table(data):
     template = env.get_template("opstats-table.tex")
+
     data_by_operator = {row['operator']: row for row in data}
-    return template.render(data=data_by_operator, opsets=OPERATOR_SETS)
+    totals_by_state = {
+        val: sum(int(row[val]) for row in data)
+        for val in ["alive", "subsumed", "subsuming", "duplicated"]
+    }
+    return template.render(
+        data=data_by_operator,
+        opsets=OPERATOR_SETS,
+        totals=totals_by_state
+    )
 
 
 if __name__ == '__main__':
@@ -65,4 +74,4 @@ if __name__ == '__main__':
     with open(args.stats_csv) as f_csv:
         data = csv.DictReader(f_csv)
         with open(args.output, 'w') as f_tex:
-            print(generate_table(data), file=f_tex)
+            print(generate_table(list(data)), file=f_tex)

@@ -13,5 +13,7 @@
         {% endfor %}
       {% endfor %}
     {% endfor %}
+    \midrule
+    \textbf{Total} & {{ totals.get('alive') }} & {{ totals.get('duplicated') }} & {{ totals.get('subsumed') }} & {{ totals.get('subsuming') }} \\
     \bottomrule
 \end{tabular}
