@@ -1,0 +1,17 @@
+\begin{tabular}{lrrrr}
+    \toprule
+    Operator & Alive & Duplicated & Subsumed & Subsuming \\
+    {% for opfamily in opsets %}
+    \midrule
+    % family start
+      {% for oprow in opfamily %}
+      % row start
+        {% for op in oprow %}
+            {% if op in data.keys() %}
+            {{ op }} & {{ data.get(op)['alive'] }} & {{ data.get(op)['duplicated']}} & {{ data.get(op)['subsumed'] }} & {{ data.get(op)['subsuming'] }} \\
+            {% endif %}
+        {% endfor %}
+      {% endfor %}
+    {% endfor %}
+    \bottomrule
+\end{tabular}
