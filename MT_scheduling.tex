@@ -1,0 +1,824 @@
+\input{preambulo}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{verbatim}
+\usepackage[svgnames]{xcolor}
+\input{listings-minizinc}
+\lstset{language=minizinc,captionpos=b}
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for theassociated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for theassociated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for theassociated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%% \title{Title\tnoteref{label1}}
+\title{Metamorphic testing of scheduling problems with constraints\tnoteref{t1}}
+\tnotetext[t1]{This work has been supported by the Spanish Ministry of Science and Innovation and the European Regional Development Fund (ERDF) (projects  RTI2018-093608-BC33 and RED2018-102472-T),
+% Luis y Sona
+the State Research Agency (AEI) of the Spanish Ministry of Science and Innovation under grant PID2021-122215NB-C31 (AwESOMe) and the Region of Madrid   under grant  S2018/TCS-4314 (FORTE-CM) co-funded by EIE Funds of the European Union.
+}
+
+% IST
+% JSS
+% STVR (Q3)
+% IEEE TSE
+
+
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \affiliation{organization={},
+%%             addressline={},
+%%             city={},
+%%             postcode={},
+%%             state={},
+%%             country={}}
+%% \fntext[label3]{}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{}
+%% \affiliation[label1]{organization={},
+%%             addressline={},
+%%             city={},
+%%             postcode={},
+%%             state={},
+%%             country={}}
+%%
+%% \affiliation[label2]{organization={},
+%%             addressline={},
+%%             city={},
+%%             postcode={},
+%%             state={},
+%%             country={}}
+
+
+\author[1]{M. Carmen de Castro-Cabrera \corref{cor1}}
+\ead{maricarmen.decastro@uca.es}
+\author[2]{Sonia Est\'evez-Mart\'{\i}n\corref{cor2}}
+\ead{soesteve@ucm.es}
+\author[2]{Luis Llana D\'{\i}az\corref{cor3}}
+\ead{llana@ucm.es}
+\author[3]{Antonio Garc\'{\i}a-Dom\'{\i}nguez}
+\ead{a.garcia-dominguez@york.ac.uk}
+
+
+\cortext[cor1]{Corresponding author}
+%\cortext[cor2]{Corresponding author}
+%\cortext[cor3]{Corresponding author}
+
+\affiliation[1]{
+  organization={Department of Computer Engineering, University of Cadiz},
+   country={Spain}}
+
+\affiliation[2]{
+  organization={Computing Systems Department, Complutense University of Madrid}, country={Spain}}
+
+\affiliation[3]{
+  organization={Department of Computer Science, University of York}, country={UK}}
+
+
+
+\begin{abstract}
+
+  \textbf{Context:} 
+  
+  \textbf{Objective:} 
+
+  \textbf{Method:} 
+
+  \textbf{Results:} 
+
+  \textbf{Conclusion:}
+
+\end{abstract}
+
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+ Metamorphic Testing \sep Mutation Testing \sep Scheduling Problems \sep Constraint Programming \sep MiniZinc
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+
+Contexto de scheduling problems.
+-------- Begin --------
+El Resource-Constrained Project Scheduling Problem (RCPSP) \cite{herroelen1998resource, abdolshah2014review,hartmann2022updated}
+planifica las tareas de un proyecto, con el objetivo de minimizar el tiempo de ejecución del proyecto y, respetando una combinación de restricciones de precedencia y de recursos. Las restricciones de precedencia entre dos tareas establece que una tarea no puede comenzar hasta que la otra haya terminado, y las restricciones de recursos limitan la cantidad de recursos utilizados por las tareas que se ejecutan al mismo tiempo.
+
+
+Falta terminar
+
+-------- end --------
+
+
+
+Importancia de probar el resolvedor y/o las reglas.
+
+Contribución de este artículo: conjunto de operadores de mutación para MiniZinc, definición de reLaciones metamórficas para problemas de planificación implementados en MiniZinc, y su evaluación en un problema modelo de planificación, consiguiendo matar a todos los mutantes no equivalentes. Estudio de la efectividad los operadores de mutación diseñados e implementrados y de las relaciones metamórficas diseñadas e implementadas.
+
+Esquema del resto del artículo.
+
+\section{Background}
+
+
+
+\subsection{Scheduling problems in constraint programming}
+
+\textit{Constraint programming} is a paradigm for solving combinatorial problems where relationships between variables are expressed in the form of constraints \citep{rbw06}.
+A constraint problem is solved when all the variables have been instantiated and the constraints are satisfied. In general, variables range over a finite set of values, corresponding with \textit{Constraint Programming over Finite Domains} \cite{schulte2006finite}.
+
+
+\begin{definition}
+  A \textit{Constraint Satisfaction Problem}
+  \citep{guns2017miningzinc} (CSP) is defined as a triple
+  $( X, D, C)$, where $X=(x_{1},\dots ,x_{n})$ is a tuple of $n$
+  variables.  $D=D_{1}\times D_{2}\cdots \times D_{n}$, such that
+  $D_i$ is the domain of values for each variable $x_i$, and
+  $C=(c_{1},\dots ,c_{m})$ are the restrictions that delimit the
+  possible values that the variables can take.  Each constraint
+  $c_{i}$ is a subset of $D$ that indicates the values that satisfy
+  the restriction.
+\end{definition}
+
+
+
+Specific constraint solvers are used to find the solution of CSP problems, that is, a \textit{constraint solver} is a decision procedure that checks whether a set of constraints can be satisfied.
+Constraint solvers perform a systematic exploration of the search space until either a solution is found or the whole tree is explored without success.
+Solvers uses classical propagation techniques \citep{van89} combined with {\em backtracking},
+a recursive algorithmic that tries to build a solution incrementally, that is, if the partial assignment of the variables is not suitable, then backtrack and try other assignments.
+
+
+MiniZinc~\cite{DBLP:journals/constraints/MarriottNRSBW08} is a modeling
+language that helps to formulate a CSP. The user can specify a CSP by
+using typed variables (Boolean, Integer, Float, Set, Array) and
+expressions that can use mathematical expressions (sums, products,
+comparison, logical operators), looping over sets (forall, exists), etc.
+A MiniZinc model can be seen as a program that solve a constraint
+problem. These programs (or models) the objects we are going to
+consider for testing: Implementation Under Testing (IUT).
+
+Scheduling problems are modeled with certain types of constraints.
+Specifically, we deal with the following constraints in this work:
+\textit{precedence constraints} where it is specified that a constraint
+must be executed before another; and the \textit{resource
+  limitations constraints} where certain tasks need to use a series of
+resources which are limited and shared. In order to formalize a
+scheduling problem we need to consider a finite set of \emph{tasks} that we will
+denote $T$, we will denote the elements of $T$ as $t_{1}$ , $t_{2}$,
+etc.
+We can have one or more processors where the tasks are executed, so we
+need a finite set of processors $P$. Some problems do not consider
+processors, in these cases we consider that there is only one processor.
+Each individual task will have a \emph{duration} that depends on the
+processor it is executed, we will
+consider a function $D$ that will indicate the duration of any task, a
+positive real number.
+We will consider an order among the tasks $\prec$ that
+will indicate the precedence between tasks: $t_{i}\prec t_{j}$.
+Each task need some resources, for instance in the \emph{Moving
+  Furniture Problem}, moving a piano needs
+3 people and 2 trolleys. Therefore, we need to consider a multiset of
+Resources that we will denote $R$,
+the multiplicity of any element denotes the number of
+instances available for each resource. Then, we need to consider the
+resources needed for completing a task, it will be represented by a
+function $L$: $L(t)$ is the multiset of resources needed for the task
+$t$. Finally, the whole scheduling problem must be completed before a
+fixed deadline that we denote $\dln$.
+
+\begin{definition}
+  A \emph{scheduling problem instance} is a tuple $i=(T, P, D, \prec, R, L, \dln)$, where
+  \begin{itemize}
+  \item $T$ is a finite set of tasks. We can assume a numeration of
+    the tasks $T=\{t_{1},\ldots t_{n}\}$. For the shake of simplicity
+    we will call $T(k)=t_{k}$, for $1\leq k\leq n$.
+  \item $P$ is a finite set of processors.
+  \item $D$ is a mapping $D:T\times P\mapsto \real^{+}$
+    \footnote{$\real^{+}=\{x\ |\ x\in\real,\ x>0\}$}
+  \item $\prec\subseteq T\times T$ is a non-reflexive and transitive relation that
+    indicates the precedence among tasks.
+  \item $R$ is a multiset of resources.
+  \item $L: T\mapsto\calP(R)$ is the mapping of associates the
+    resources needed for any task.
+  \item $\dln\in\real^{+}$ is the deadline of the scheduling problem.
+  \end{itemize}
+  We denote the set of scheduling problem instances as \SPI.
+\end{definition}
+
+
+Scheduling problem instances are the inputs of the model implemented
+in MiniZinc. When executing the model with a particular instance, the
+output of MiniZinc gives the minimum time require to complete all the
+tasks and schedule.
+In this paper, we are going to
+consider only the minimum time in which it is possible to
+schedule the problem, that is the \emph{makespan}. Sometimes the
+scheduling problem has not a solution. In this case, we consider that
+the makespan is infinite. To formalize this, we use
+the symbol $\infty$. We will denote
+$\sol(i)\in\real^{+}\cup\{\infty\}$\footnotemark the solution of the scheduling
+problem $S$.
+
+\footnotetext{We assume $x<\infty$ for all $x\in\real$ and $\infty\not<\infty$}
+
+\begin{definition}
+Let us consider a scheduling problem.
+A \emph{metamorphic relation}  $MR\subseteq\SPI\times\SPI\times(\real^{+}\cup\{\infty\})\times(\real^{+}\cup\{\infty\})$
+is a relation over two
+scheduling problem instances $i_1$ and $i_2$, and the outputs
+corresponding
+to the execution of $o_{1}=\sol(i_1)$ and $o_{2}=sol(i_2)$.
+$i_1$ is a \emph{source input} and that $i_2$ is a \emph{follow-up input}.
+\end{definition}
+
+\subsection{Metamorphic testing}
+Metamorphic testing (MT) is a software testing technique that is based in MRs \cite{segura2011automated}.
+An MR is a relationship defined between multiple inputs and outputs that is met. 
+The goal is obtaining (by MRs) new test cases (follow-up test cases named) that detect errors that original test cases did not detect. Chen introduced this name in~\cite{chen1998metamorphic}, it has been applied to numerous contexts and programs. A specific event is held annually~\cite{ 7961643,Xie:2019:3340651} from 2016. 
+An example of the usefulness of MRs is given as follows. Consider, for example, a program SP, which implements the computation of the shortest path between any two nodes $a$, and $b$, $SP(G,a,b)$. For testing whether the solution is correct, we can obtain another test case, in which the path is in reverse order $SP(G,b,a)$. Therefore, it must be satisfied that $SP(G,a,b)= SP(G,b,a)$. If the results are different, we have detected a failure in the program. This MR can be defined in general terms as: 
+$MR: \forall x, y \in G, SP(G, x,y) = SP(G, y,x) $
+Despite the fact that MT has been applied to multiple domains and programs ~\cite{Chen:2018:MTR:3177787.3143561,almendros2021metamorphic}, its application to programs that implement scheduling problems implemented in MiniZinc constraint language is a novel proposal. Hence, Minizinc has been applied to support MT~\cite{de2019using}.\\
+
+
+\subsection{Mutation testing}
+%% Referencias mutación:
+%%% Review: PAPADAKIS2019275, parsai2literature
+%%% Operadores de mutacion: (1996) Offutt96OpMut, Mresa99OpMut, PapadakisM10, puig2010equivalencias
+
+
+
+\section{Proposal}
+Nuestra propuesta pretende probar los programas en MiniZinc (lenguaje de lógica de restricciones) que implementan problemas de planificación, por seguir un esquema fijo y conocido. Para ello, se propone, por un lado, utilizar la prueba metamórfica, incluyendo el diseño e implementación de relaciones metamórficas en el contexto de estos programas, y aplicarlas para obtener un mejor conjunto de casos de prueba, que el original dado. Así mimso, se propone, aplicar la prueba de mutaciones, que al no existir un sistema de mutación para este lenguaje de programación, se pretende diseñar los opradores de mutación apropiados, implem,entar y aplicar, para obtener mutantes qeu nos permitan probar el conjunto de casos de prueba. Posteriormente, evaluaremos tanto las relaciones metamórficas como los operadores de mutación.
+
+\subsection{Mutation operators for MiniZinc}
+%%%  Hecho***Explicar los operadores por categorías: un apartado para cada categoría: básicos, específicos de MiniZinc y específicos del problema.
+%% Hecho: Referencia: buscar revisión sistemática, o referencia primera de Fortran y Mothra
+
+%  Hecho. Listar los operadores, citando como base el conjunto mínimo de Fortran/Mothra, y luego añadiendo cosas específicas de MiniZinc.
+%***Operadores de mutación: Carmina
+En base a cualquier sistema de mutación de cualquier lenguaje, se han diseñado e implementado un conjunto de operadores de mutación para poder generar el conjunto de mutantes necesario para aplicar esta técnica.
+Para la implementación de este conjunto de operadores inicial para MiniZinc, se ha considerado la investigación existente sobre el tema, y especialmente,  sobre un conjunto de operadores de mutación suficiente o mínimo~\cite{Offutt96OpMut,Mresa99OpMut,PapadakisM10} para hacer más eficiente la aplicación de la técnica de prueba de mutación. Teniendo encuenta estos trabajos, se han implementado operadores de mutación de expresiones aritméticas, lógicas y relacionales, comunes  a la mayoría de los lenguajes de programación. Así mismo, en~\cite{Mresa99OpMut} se destaca que es importante tener en cuenta las características del lenguajes y el contexto en el que se aplica. De esta forma, teniendo en cuenta que MiniZinc es un lenguaje declarativo (a diferencia de C), se han implementado operadores propios de este lenguaje, en los que se realiza una sustitución de los cuantaificadores lógicos, como posible error del programador, que podría confundirse al escribir un cuantificador universasl por un cuantificador existencial, o viceversa.  Así mismo, para tener en cuenta el contexto en el que se aplica la prueba de mutación en este caso, se ha considerado los programas que implementan problemas de scheduling en MiniZinc. Este tipo de programas incluye una función denominada \texttt{cumulative}, que contiene un número de parámetros con significados diferentes, que si se intercambian pueden provocar errores en el resultado. Es por ello, que se ha implementado un operador específico para este posible error.\\
+
+Por tanto, específicamente, se han diseñado e implementado un total de 43 operadores de mutación, agrupados en 5 tipos: de expresiones aritméticas, de expresiones relacionales, de expresiones lógicas, de cuantificadores y de intercambio de parámetros. De dichos tipos, son operadores básicos y comunes de casi todos los lenguajes de programación, los relacionales, lógicos y aritméticos. Sin embargo, en este caso, además se han definido dos tipos de operadores específicos de Minizinc: los operadores de cuantificación y el operador de intercambio, que afecta a la función \texttt{cumulative} de MiniZinc. En la Tabla~\ref{tab:Op-MiniZinc} se describen los operadores de mutación para MiniZinc en el contexto de los problemas de scheduling, clasificados por categorías.
+
+%%%% Tabla operadores mutación
+%% [htb!]
+\begin{table*}[htb!]
+    \caption{Operadores de mutación para MiniZinc con problemas de scheduling}
+    \label{tab:Op-MiniZinc}
+    \centering
+    \small
+    \begin{tabular}{l p{1.5\columnwidth}r}
+    \toprule
+      Operador & \hspace{3cm} Descripción \\
+     \midrule
+     \multicolumn{2}{c}{Operadores de expresiones aritméticas} \\
+     \midrule
+     A2S,S2A & Sustituye un operador aritmético (+, -, *, div) por otro del mismo tipo.\\
+     A2M,M2A\\
+     A2DV,DV2A\\
+     M2S,S2M\\
+     M2DV,DV2M\\
+     S2DV,DV2S\\
+     \midrule
+     \multicolumn{2}{c}{Operadores de expresiones relacionales} \\
+     \midrule
+     LE2LT,LT2LE & Sustituye un operador relacional $(<, >, <=, >=, ==, !=)$ por otro del mismo tipo.\\
+     LE2GT,GT2LE\\
+     LE2NE,NE2LE \\
+     LE2GE,GE2LE \\
+     LE2EQ,EQ2LE\\
+     LT2GT,GT2LT\\
+     LT2GE,GE2LT\\
+     LT2EQ,EQ2LT\\
+     LT2NE,NE2LT\\
+     GT2EQ,EQ2GT\\
+     GT2NE,NE2GT\\
+     EQ2NE,NE2EQ\\
+     
+     \midrule
+     \multicolumn{2}{c}{Operadores de expresiones lógicas} \\
+     \midrule
+     C2D y  D2C & Sustituye un operador lógico ($\wedge$, $\vee$ ) por otro del mismo tipo.\\
+     \midrule
+     \multicolumn{2}{c}{Operadores de intercambio de cuantificadores} \\
+      \midrule
+      E2F & Sustituye la aparición de un cuantificador lógico \texttt{exists}  por un cuantificador \texttt{forall}.\\
+      F2E & sustituye la aparición de un cuantificador lógico \texttt{forall} por un cuantificador  \texttt{exists}.\\
+     \midrule
+      \multicolumn{2}{c}{Operador de intercambio de parámetros} \\
+     \midrule
+     CSWAP & Intercambia los parámetros 2 y 3, de la función de \texttt{cumulative} de MiniZinc. \\
+    \bottomrule
+    \end{tabular}
+    \end{table*}
+
+%\input{mutation-counts-before_mrs}
+
+\begin{comment}
+\subsubsection{Operadores de cuantificadores: E2F y F2E}
+E2F: Este operador sustituye la aparición de un cuantificador lógico \textit{Existe}, que en lenguaje MiniZinc es la palabra reservada \texttt{exists}  por un cuantificador \textit{Para todo}, que en lenguaje MiniZinc es la palabra 
+reservada \texttt{forall}. 
+
+F2E: Este operador sustituye la aparición de un cuantificador lógico  \textit{Para todo}, que en lenguaje MiniZinc es la palabra reservada \texttt{forall}  por un cuantificador \textit{Existe}, que en lenguaje MiniZinc es la palabra 
+reservada \texttt{exists}. 
+
+\subsubsection{Operadores relacionales: LE2LT y LT2LE}
+LE2LT: Este operador sustituye la aparición de un operador relacional $<=$ por el operador del mismo tipo $<$
+
+LT2LE: Este operador sustituye la aparición de un operador relacional $<$ por el operador del mismo tipo $<=$
+
+\subsubsection{Operadores relacionales: LE2GT y GT2LE}
+LE2GT: Este operador sustituye la aparición de un operador relacional $<=$ por el operador del mismo tipo $>$
+
+GT2LE: Este operador sustituye la aparición de un operador relacional $>$ por el operador del mismo tipo $<=$
+
+\subsubsection{Operadores relacionales: LE2NE y NE2LE}
+LE2NE: Este operador sustituye la aparición de un operador relacional $<=$ por el operador del mismo tipo $!=$
+
+NE2LE: Este operador sustituye la aparición de un operador relacional $!=$ por el operador del mismo tipo $<=$
+
+\subsubsection{Operadores relacionales: LE2GE y GE2LE}
+LE2GE: Este operador sustituye la aparición de un operador relacional $<=$ por el operador del mismo tipo $>=$
+
+GE2LE: Este operador sustituye la aparición de un operador relacional $>=$ por el operador del mismo tipo $<=$
+
+\subsubsection{Operadores relacionales: LE2EQ y EQ2LE}
+LE2EQ: Este operador sustituye la aparición de un operador relacional $<=$ por el operador del mismo tipo $==$
+
+EQ2LE: Este operador sustituye la aparición de un operador relacional $==$ por el operador del mismo tipo $<=$
+
+\subsubsection{Operadores relacionales: LT2GT y GT2LT}
+LT2GT: Este operador sustituye la aparición de un operador relacional $<$ por el operador del mismo tipo $>$
+
+GT2LT: Este operador sustituye la aparición de un operador relacional $>$ por el operador del mismo tipo $<$
+
+\subsubsection{Operadores relacionales: LT2GE y GE2LT}
+LT2GE: Este operador sustituye la aparición de un operador relacional $<$ por el operador del mismo tipo $>=$
+
+GE2LT: Este operador sustituye la aparición de un operador relacional $>=$ por el operador del mismo tipo $<$
+
+\subsubsection{Operadores relacionales: LT2EQ y EQ2LT}
+LT2EQ: Este operador sustituye la aparición de un operador relacional $<$ por el operador del mismo tipo $==$
+
+EQ2LT: Este operador sustituye la aparición de un operador relacional $==$ por el operador del mismo tipo $<$
+
+\subsubsection{Operadores relacionales: LT2NE y NE2LT}
+LT2NE: Este operador sustituye la aparición de un operador relacional $<$ por el operador del mismo tipo $!=$
+
+NE2LT: Este operador sustituye la aparición de un operador relacional $!=$ por el operador del mismo tipo $<$
+
+\subsubsection{Operadores relacionales: GT2EQ y EQ2GT}
+GT2EQ: Este operador sustituye la aparición de un operador relacional $>$ por el operador del mismo tipo $==$
+
+EQ2GT: Este operador sustituye la aparición de un operador relacional $==$ por el operador del mismo tipo $>$
+
+\subsubsection{Operadores relacionales: GT2NE y NE2GT}
+GT2NE: Este operador sustituye la aparición de un operador relacional $>$ por el operador del mismo tipo $!=$
+
+NE2GT: Este operador sustituye la aparición de un operador relacional $!=$ por el operador del mismo tipo $>$
+
+\subsubsection{Operadores relacionales: EQ2NE y NE2EQ}
+EQ2NE: Este operador sustituye la aparición de un operador relacional $==$ por el operador del mismo tipo $!=$
+
+NE2EQ: Este operador sustituye la aparición de un operador relacional $!=$ por el operador del mismo tipo $==$
+%%
+\subsubsection{Operadores lógicos: C2D y  D2C}
+C2D: Este operador sustituye la aparición de un operador lógico \textit{and}, $\wedge$ , en MiniZinc  por el operador del mismo tipo \textit{or}, $\vee$, en MiniZinc.\\
+ D2C: Este operador sustituye la aparición de un operador lógico \textit{or}, $\vee$, en MiniZinc,  por el operador del mismo tipo \textit{and}, $\wedge$ en MiniZinc.
+
+\subsubsection{Operadores lógicos: C2D y  D2C}
+C2D: Este operador sustituye la aparición de un operador lógico $\wedge$ (and) por el operador del mismo tipo $\vee$ (or).\\
+D2C: Este operador sustituye la aparición de un operador lógico $\vee$ (or) por el operador del mismo tipo $\wedge$ (and).
+
+\subsubsection{Operadores aritméticos: A2S y S2A}
+A2S: Este operador sustituye la aparición de un operador aritmético $+$  por el operador del mismo tipo $-$.\\
+S2A: Este operador sustituye la aparición de un operador aritmético $-$  por el operador del mismo tipo $+$.
+
+\subsubsection{Operadores aritméticos: A2M y M2A}
+A2M: Este operador sustituye la aparición de un operador aritmético $+$  por el operador del mismo tipo $*$.\\
+M2A: Este operador sustituye la aparición de un operador aritmético $*$  por el operador del mismo tipo $+$.
+
+\subsubsection{Operadores aritméticos: A2DV y DV2A}
+A2DV: Este operador sustituye la aparición de un operador aritmético $+$  por el operador del mismo tipo $div$.\\
+DV2A: Este operador sustituye la aparición de un operador aritmético $div$  por el operador del mismo tipo $+$.
+
+\subsubsection{Operadores aritméticos: M2S y S2M}
+M2S: Este operador sustituye la aparición de un operador aritmético $*$  por el operador del mismo tipo $-$.\\
+S2M: Este operador sustituye la aparición de un operador aritmético $-$  por el operador del mismo tipo $*$.
+
+\subsubsection{Operadores aritméticos: M2DV y DV2M}
+M2DV: Este operador sustituye la aparición de un operador aritmético $*$  por el operador del mismo tipo $div$.\\
+DV2M: Este operador sustituye la aparición de un operador aritmético $div$  por el operador del mismo tipo $*$.
+
+\subsubsection{Operadores aritméticos: S2DV y DV2S}
+S2DV: Este operador sustituye la aparición de un operador aritmético $-$  por el operador del mismo tipo $div$. \\
+DV2S: Este operador sustituye la aparición de un operador aritmético $div$  por el operador del mismo tipo $-$.
+
+\subsubsection{Operador de intercambio: CSWAP}
+CSWAP: Este operador intercambia los parámetros 2 y 3, de la función de \texttt{cumulative} de Minizinc.
+\end{comment}
+
+\subsection{Metamorphic relations for scheduling problems}
+
+Proponer las reglas metamórficas y justificarlas.
+Falta definir las relaciones metamórficas: MR1, MR2, MR3, etc.
+
+
+This section exposes the MRs that we propose to detect possible errors
+related to modeling scheduling problems: specifically, errors
+that are located in precedence and resource sharing
+constraints. Each MR is a condition $MR$ that depends
+on 4 elements: $i_{1}$ a scheduling problem instance, $i_{2}$ the
+following-up scheduling instance that is obtained by modifying
+$i_{1}$, $o_{1}$ the output corresponding to $i_{1}$, and $o_{2}$ the
+following-up output that is the output of $i_{2}$. A valid
+implementation, a model in our case, should make true the MR.
+
+\subsubsection{MR1. Sequentially of all tasks}
+
+Let us consider a scheduling problem instance $i_1 = (T, P, D, \prec, R,
+L, \dln)$ such than $|P|=1$ and $\dln\geq\sum_{i=1}^{n}D(t_{i},p_{1})$.
+Then we build the scheduling instance problem
+$mr_{1}(i_{1})=(T, D, \prec_{2}, R, L, \dln)$ build as follows. Let us
+consider $i_{2}=mr_1(i_{1})$, $o_{1}=\sol(i_{1})$, and
+$o_{2}=\sol(i_{2})$.
+Then, we define $t_{i}\prec_{2} t_{j}$ iff $i<j$, that is, we have a lineal
+precedence relation. In these circumstances, if $i_{1}$ has a
+solution, that is $o_{1}<\infty$,
+then $i_{2}$ has a solution $o_{2}$ such that
+$o_{2}=\sum_{i=1}^{|T|}D(t_{i})$.
+
+\begin{framed}
+  \begin{displaymath}
+      \begin{array}{l}
+        MR_{1}(i_1,i_2,o_{1},o_{2}):\\
+        \hskip 1em i_1=(T,D,\prec,R,L,\dln)\wedge  \\
+        \hskip 1em i_2=mr_1(i_1)\wedge o_{1}=\sol(i_{1})\wedge o_{2}=\sol(i_2)\\
+      \hskip 1em \wedge o_{1}<\infty\wedge \dln>=\sum_{i=1}^{|T|}D(T(i)) \\
+      \hskip 1em \longrightarrow o_2 = \sum_{i=1}^{|T|}D(T(i))
+    \end{array}
+  \end{displaymath}
+\end{framed}
+
+
+
+
+
+
+\subsubsection{MR2. Add inverse precedence}
+The idea of this MR is that if we introduce a dependency that
+introduce a cycle in a scheduling problem instance with a solution,
+then the new problem has no solutions. Formally,
+let us consider $i_{1}=(T, P, D, \prec, R, L, \dln)$,
+$t_{i}, t_{j}\in T$ such that $t_{i}\prec t_{j}$, and
+$o_{1}=\sol(i_{1})<\infty$.
+Now let us consider
+the modified instance problem as $mr_{2}(i_{1},)=(T, D, \prec_{2}, R, L,
+\dln)$,
+were $\prec_{2}$ is $\prec$ where the relation $t_{j}\prec t_{i}$ is
+added, that is $\prec_{2}= (\prec_{1}\cup \{(t_{j}, t_{i})\})^{+}$.
+If we take $i_{2}=mr_{2}(i_{1})$ and $o_{2}=\sol(i_{2})$, then
+$o_{2}=\infty$.
+
+\begin{framed}
+  \begin{displaymath}
+      \begin{array}{l}
+    MR_{2}(i_1,i_2,o_{1},o_{2}):\\
+      \hskip 1em i_1=(T,P,D,\prec,R,L,\dln)\wedge  \\
+      \hskip 1em  i_2=mr_2(i_1)\wedge o_{1}=\sol(i_{1})\wedge o_{2}=\sol(i_2)\\
+      \hskip 1em \wedge o_{1}<\infty
+      \longrightarrow o_2=\infty
+    \end{array}
+  \end{displaymath}
+\end{framed}
+
+
+% Si se añade una precedencia que es la inversa de una que ya existe entonces quiere decir que hay un ciclo. Pero, si al añadir esa precedencia inversa sigue dando solución y no es insat, entonces quiere decir que se ha puesto un exists en vez de un forall.
+
+% Obser: El que es insatisfactible tiene un forall y el que tiene solución tiene un exists es el programa mutado (basic-MUT-forall-exists.mzn)
+% En este caso, no se ha encontrado un operador definido para este cambio de cuantificadores
+% Podemos definirlo, indicando que se cambia un cuantificador lógico por otro (Existencial por universal o viceversa) .
+
+% Esto se hace para matar al mutante que cambia forall por exists.
+
+% Ejemplo correspondiente con el código de la carpeta MR2 del GitHUB y a la Figura \ref{Fig:MR2_Add-inverse-precedence}
+
+% Original: constraint forall(i in PREC)
+
+% Cambiado: constraint exists(i in PREC)
+
+% En los datos se añade la precedencia  SOLDIERS $\rightarrow$ FUNDS para que forme  ciclo con la precedencia que ya existe que es
+%  FUNDS $\rightarrow$ SOLDIERS
+
+
+
+\subsubsection{MR3. Extreme duration}
+The idea of this rule is that if we modify the duration long enough,
+the whole scheduling will take longer. Let us consider
+$i_{1}=(T, P, D, \prec, R, L, \dln)$, and sum of the duration
+of all tasks in all processors and take an upper bound of this sum
+$c>\sum_{i=1}^{|T|}\sum_{j=1}^{|P|}D(t_{i},p_{j})$. We modify the
+duration of the task $1$ such that its duration is $D(1)+c$, formally, we
+define
+\begin{displaymath}
+  D_{2}(t_{i}, p_{j})=
+  \begin{cases}
+    D(t_{1}, p_{1}) + c & \text{if } i=1, j=1\\
+    D(t_{i}, p_{j}) & \text{otherwise}
+  \end{cases}
+\end{displaymath}
+We take $\dln_{2}=\sum_{i=1}^{|T|}\sum_{j=1}^{|P|}D_{2}(t_{i},p_{j})$.
+Then we take $mr_{3}(i_{1})=(T, D_{2}, \prec, R, L, \dln_{2})$. Let us
+consider $o_{1}=\sol(i_{1})$, $i_{2}=mr_{3}(i_{1})$ and
+$o_{2}=\sol(i_{2})$.
+If $o_{1}<\infty$ then $o_{1}<o_{2}<\infty$.
+
+\begin{framed}
+  \begin{displaymath}
+      \begin{array}{l}
+    MR_{3}(i_1,i_2,o_{1},o_{2}):\\
+      \hskip 1em i_1=(T,P,D,\prec,R,L,\dln) \wedge  \\
+      \hskip 1em  i_2=mr_3(i_1)\wedge o_{1}=\sol(i_{1})\wedge o_{2}=\sol(i_2)\\
+      \hskip 1em \wedge o_{1}<\infty
+      \longrightarrow o_{1}<o_2<\infty
+    \end{array}
+  \end{displaymath}
+\end{framed}
+
+
+% Hacemos un mutante donde cambiamos un \texttt{forall} por \texttt{exists},
+
+% \texttt{jobshopMUT-forall-exists-1.mzn}.
+
+% En este caso se aplica el nuevo operador de mutación en el que cambiamos un cuantificador por otro
+% y este cambio se puede hacer en otras partes del código dando lugar a nuevos mutantes.
+
+
+
+
+
+
+
+% La Metamorphic Relation \texttt{Extreme Durations}, también mata a otro mutante.
+
+% \texttt{jobshopMUT-and-or.mzn}
+
+% En este caso se ha cambiado la conjunción por la disyunción: \verb+/\  -> \/+
+
+% \subsubsection{cumulative constraint (resources)}
+
+
+
+% The cumulative constraint is used for describing cumulative resource usage.
+
+% \texttt{cumulative(array[int] of var int: s, array[int] of var int: d, array[int] of var int: r, var int: b)}
+
+% Schedule for moving furniture:
+% It requires that a set of tasks given by start times $s$, durations $d$, and resource requirements $r$, never require more than a global resource bound $b$ at any one time.
+
+% Los códigos son \texttt{Codes/moving.mzn} y \texttt{Codes/moving.dzn}.
+
+
+
+
+\subsubsection{MR4. More resources}
+This rule establishes that if we take more resources, the
+time required to complete all tasks is, at most, the original one.
+Let us consider
+$i_{1}=(T, P, D, \prec, R, L, \dln)$, for each $r\in R$ we take a
+positive integer $c_{r}$ and then we define
+\begin{displaymath}
+  R_{2}(r)=R(r)+c_{r}\quad \forall r\in R
+\end{displaymath}
+Then we take $mr_{4}(i_{1}) = (T, D, \prec, R_{2}, L, \dln)$.
+Let us
+consider $o_{1}=\sol(i_{1})$, $i_{2}=mr_{4}(i_{1})$ and
+$o_{2}=\sol(i_{2})$.
+If $o_{1}<\infty$ then $o_{2}\leq o_{1}$.
+
+\begin{framed}
+  \begin{displaymath}
+      \begin{array}{l}
+    MR_{4}(i_1,i_2,o_{1},o_{2}):\\
+      \hskip 1em  i_1=(T,P,D,\prec,R,L,\dln) \wedge\\
+      \hskip 1em  i_2=mr_3(i_1)\wedge o_{1}=\sol(i_{1})\wedge o_{2}=\sol(i_2)\\
+      \hskip 1em \wedge o_{1}<\infty
+      \longrightarrow o_{2}\leq o_1
+    \end{array}
+  \end{displaymath}
+\end{framed}
+
+
+
+
+\section{Methodology}
+%Listar research questions sobre las propuestas:
+
+Para evaluar la propuesta planteada, que combina las dos técnicas de prueba de software descritas (la prueba de mutaciones y la prueba metamórfica), se plantean en esta sección varias preguntas de investigación, y se describe el programa sobre el que se realizarán los experimentos.
+
+\subsection{Program under study}
+TO DO: programa bajo prueba? Sonia y Luis
+
+\emph{explicar qué programas se van a usar para el estudio y por qué}\\
+Aunque hay numerosos ejemplos de programas en MiniZinc que implementan problemas de schedulling, se ha obtado por utilizar un modelo de ejemplo  genérico denominado RCPSP (Resource-Constrained Project Scheduling Problem), que se encuentra en el repositorio \footnote{https://github.com/MiniZinc/minizinc-benchmarks/blob/master/rcpsp/rcpsp.mzn} y que contiene así mismo, numerosos casos de prueba de libre acceso. El listado~\ref{lst:minizinc-rcpsp} muestra el modelo utilizado.
+
+
+
+
+\subsection{Research questions}
+
+\newcommand{\rqoperators}{RQ1}
+\newcommand{\rqmetamorphic}{RQ2}
+\newcommand{\rqidentifying}{RQ3}
+
+\paragraph{\rqoperators} \emph{Which mutation operators are the most effective for testing constraint solvers?}
+
+Table~\ref{tab:Op-MiniZinc} showed a significant number of mutation operators for the MiniZinc constraint programming language. Some of these operators are generic (being focused on arithmetic and logical operators), whereas some are specific to MiniZinc (E2F and F2E swap \texttt{exists} and \texttt{forall}, and CSWAP specifically targets the MiniZinc \texttt{cumulative} function).
+
+% mover a partir de aquí a S2.3
+
+While these operators target different possible defects, they also incur a cost in the mutation testing process: their mutants need to be generated, and test cases have to be run against them. It is known from the literature that \emph{selective mutation testing} (using only some of the mutants) can have similar testing effectiveness as the full set of mutation operators, for a fraction of the cost~\cite{Mresa99OpMut}.
+
+The literature has also recognised that not all mutants are of the same value: some mutants are killed by most test cases we can come up with, whereas others require very specific test cases, and others are equivalent to the test program. Specifically, Papadakis et al.\ argued against using \emph{subsumed mutants} on experimental studies based on mutation testing, as they could skew the results~\cite{papadakis_threats_2016}. According to Ammann et al.~\cite{ammann_establishing_2014}, mutant $x$ dynamically subsumes mutant $y$ if $x$ has been killed and every test that kills $x$ also kills $y$. These subsumed mutants are redundant for the purposes of designing test cases, and can be safely discarded (e.g. by refining the definition of the mutation operator, or not using it at all).
+
+% fin de trasfondo para S2.3
+
+Due to the above reasons, we are interested in identifying the subset of the operators in Table~\ref{tab:Op-MiniZinc} that produce the most useful mutants.
+For this purpose, we will use the greedy subsuming mutant identification algorithm from Papadakis et al.~\cite{papadakis_threats_2016}.
+It first discards the live and duplicated\footnote{A mutant $x$ is said to be a duplicate of another mutant $y$ if it is killed by the same tests.} mutants from the overall set of mutants $M$.
+A subsuming mutant set is then found in a greedy way, by repeatedly adding the mutant which subsumes the most of the remaining mutants and discarding the mutants it subsumes, until no mutants are left.
+
+Starting from a test suite that kills all non-equivalent mutants, we will first apply the algorithm by Papadakis et al.\ and count for each operator the live, duplicated, subsumed, and subsuming mutants.
+We have to consider, however, that since this is the first version of the mutation operator set for Mini\-Zinc, there is a high likelihood that we will have a significant number of duplicated mutants that would be discarded but could still provide value for testing.
+
+In order to evaluate the usefulness of the various operators in the presence of duplicated mutants, we propose using a variant of Papadakis' algorithm where for each set of mutants that duplicate each other, a random element will be picked as its sole representative and used to compute subsuming relationships.
+Due to the stochasticity of this process, we will run this adapted algorithm 30 times, and then compute three aggregate metrics for each operator: how many times it contributed a subsuming mutant, the size of the smallest set of subsuming operators that it was part of, and the size of the smallest set of subsuming mutants it was part of.
+A ``useful'' operator would be one which contributes a subsuming mutant in most if not all of those runs, resulting in a smaller set of subsuming operators and/or subsuming mutants. 
+
+% Se registra el número de mutantes generados en total identificando, los operadores de mutación que los han generado. Es importante analizar también el efecto de los diferentes mutantes generados, y a través de qué operador de mutación se ha generado. Es decir, si unos mutantes mueren con más facilidad o son más difíciles de matar que otros. Cuántos  mueren con el conjunto inicial de casos de prueba y cuántos permanecen vivos, analizando estos últimos, manualmente para detectar posibles mutantes equivalentes, que no se pueden matar. Obtener la tasa de mutación, definida como el cociente entre el número de mutantes muertos y la diferencia entre el total  de mutantes generados y el número mutantes equivalentes.
+% Una tasa de mutación del 100\% indica que el conjunto de casos de prueba es de calidad, pues es capaz de matr todos los mutantes.
+
+\paragraph{\rqmetamorphic} \emph{¿Cómo mejora la cobertura de defectos combinar las pruebas de mutación la prueba metamórfica? ¿En qué medida? ¿Cuánto mejora el conjunto de casos de prueba antes y después de aplicar las relaciones metamórficas?}
+
+Puesto que la prueba metamórfica se aplica para mejorar la cobertura de mutación, el objetivo es obtener nuevos casos de prueba que maten mutantes, cuyos casos iniciales no mataban mutantes, obteniendo un conjunto de casos de prueba más completo y por tanto, de mejor calidad. Por tanto, para responder a esta cuestión es necesario medir la mejora que aporta la prueba metamórfica al conjunto inicial
+
+\paragraph{\rqidentifying} \emph{¿Existen características comunes en las relaciones metamórficas más efectivas para programas con restricciones, especialmente para programas con restricciones que especifican problemas de scheduling?}
+
+Se describe la forma en que se han diseñado las relaciones metamórficas, identificando características comunes de los programas de scheduling y del lenguaje MiniZinc en particular, como lenguaje de restricciones. Este enfoque se basas en las investigaciones y revisiones sistemáticas que se han hecho sobre esta técnica que apuntan a la influencia de la lógica del programa en el diseño e implementación  de las relaciones metamórficas
+
+%* cuál es el comportamiento de los distintos tipos de mutantes propuestos (son difíciles de matar? están subsumidos unos por otros? etc.)?
+
+%* son útiles las relaciones metamórficas para producir nuevas pruebas que matan a los mutantes supervivientes? cuáles de estas reglas son más útiles?
+
+\iffalse
+
+Explicar cómo se van a responder esas research questions: programas MiniZinc seleccionados, conjuntos de pruebas iniciales seleccionados, cuántos mutantes salen de esos programas y cuántos son equivalentes (explicando cómo se detectaron los equivalentes), qué se va a medir (mutantes muertos por el conjunto inicial y por las pruebas producidas por las reglas metamórficas).
+
+\fi
+
+
+
+\section{Results and discussion}
+
+Por cada pregunta, se ponen los resultados en bruto, y luego se responden las preguntas originales sobre los resultados.
+
+\subsection{\rqoperators: mutant operator effectiveness}
+
+\begin{table}
+    \centering
+    \input{Data/V8_operatorStats_noDups}
+    \caption{Operator statistics, using the unmodified subsuming mutant identification algorithm from Papadakis et al.~\cite{papadakis_threats_2016}}
+    \label{tab:opstats-nodups}
+\end{table}
+
+* ¿cuál es el comportamiento de los distintos tipos de mutantes propuestos (son difíciles de matar? están subsumidos unos por otros? etc.)?
+
+Se han aplicado 33 de los 43 operadores de mutación anteriormente definidos en la tabla~\ref{tab:Op-MiniZinc} al modelo de programa elegido (\texttt{rcpsp.mzn}), generándose un total 76 mutanes. Tras la ejecución del conjunto de datos iniciales procedentes del repositorio....¿cuántos casos de prueba?, se han matado 68 mutantes, quedando vivos 8, que tras analizarlos, 2 de ellos han resultado ser equivalentes, como se muestra en la tabla~\ref{tab:mutant-counts}. Por lo que la puntuación de mutación en la primera ronda es del 91.8\% . 
+
+\textbf{¿Qué operadores de mutación son más efectivos para detectar defectos en lenguajes con restricciones?}
+Respecto a  los 33 operadores de mutación aplicados, los mutantes que quedan vivos en esta primera ronda, son generados por los operadores: C2D, EQ2LE, GT2NE, LT2GT y NE2GT. De ellos uno es de expresiones lógicas y el resto de expresiones relacionales. Se puede observar que los operadores específicos del lenguaje MiniZinc aplicados: CSWAP(intercambio de los parámetros 2 y 3 de \texttt{cumulative}) y F2E(sustituye la aparición de un cuantificador lógico \texttt{forall} por un cuantificador  \texttt{exists}), han generado mutantes que han sido todos matados por el conjunto de casos de prueba inicial.	Por lo que se deduce que son efectivos en detectar errores en este tipo de programas.
+
+\subsection{\rqmetamorphic: impact of follow-up test cases}
+
+Aunque es un buen resultado el obtenido, se tratará de mejorar aplicando la técnica de pruebas metamórficas, obteniendo nuevos casos de prueba (casos de prueba siguientes) a través de las relaciones metamórficas diseñadas e implementadas.
+%\input{mutation-counts-before_mrs}
+\begin{table}
+    \centering
+    \begin{tabular}{lrrr}
+    \toprule
+    \textbf{Operator} & \textbf{G} & \textbf{E} & \textbf{K} \\
+    \midrule
+A2DV	&	5	&	0	&	5	\\
+A2M	    &	5	&	0	&	5	\\
+A2S	    &	5	&	0	&	5	\\
+C2D	    &	2	&	0	&	0	\\
+CSWAP	&	1	&	0	&	1	\\
+D2C	    &	1	&	0	&	1	\\
+E2F	    &	1	&	0	&	1	\\
+EQ2GT	&	1	&	0	&	1	\\
+EQ2LE	&	1	&	0	&	0	\\
+EQ2LT	&	1	&	0	&	1	\\
+EQ2NE	&	1	&	0	&	1	\\
+F2E	 &	4	&	0	&	4	\\
+GT2EQ	&	4	&	0	&	4	\\
+GT2LE	&	4	&	0	&	4	\\
+GT2LT	&	4	&	0	&	4	\\
+GT2NE	&	4	&	0	&	3	\\
+LE2EQ	&	4	&	0	&	4	\\
+LE2GE	&	4	&	0	&	4	\\
+LE2GT	&	4	&	0	&	4	\\
+LE2LT	&	4	&	0	&	4	\\
+LE2NE	&	4	&	0	&	4	\\
+LT2EQ	&	1	&	0	&	1	\\
+LT2GE	&	1	&	0	&	1	\\
+LT2GT	&	1	&	0	&	0	\\
+LT2LE	&	1	&	0	&	1	\\
+LT2NE	&	1	&	1	&	0	\\
+NE2EQ	&	1	&	0	&	1	\\
+NE2GT	&	1	&	0	&	0	\\
+NE2LE	&	1	&	0	&	1	\\
+NE2LT	&	1	&	0	&	1	\\
+S2A	    &	1	&	1	&	0	\\
+S2DV	&	1	&	0	&	1	\\
+S2M	    &	1	&	0	&	1	\\
+   
+    \midrule
+    % Mutation score = K / (G - E)
+    \textbf{Total} & 76 & 2 & 68 \\
+    \bottomrule
+    \end{tabular}
+    \caption{(G)enerated, (E)quivalent, and (K)illed mutant counts before applying metamorphic relations}
+    \label{tab:mutant-counts}
+\end{table}
+
+%Después de esta evaluación, se analizan los operadores que todavía tienen mutantes vivos que son los 6 siguientes.
+%Se aplican MR3 a estos 6 operadores y se mueren todos.
+
+% Operador segunda vuelta	Localización op	MR3 ¿Qué quiere decir?
+Al aplicar MR3 al conjunto de casos de prueba inicial, se obtiene un conjunto de casos de pruebas siguientes, que se ejecutan contra los 6 mutantes que aún quedan vivos, obteniéndose como resultado que estos casos de prueba matan a los mutantes restantes, por lo que se consigue matar al 100\% de los mutantes, como se puede observar en la tabla~\ref{tab:mutant-counts}. 
+
+\subsection{\rqidentifying: features of mutation-effective metamorphic relations}
+
+SONIA: poner análisis de lo efectivos que han sido los follow-up tests de cada MR, y ver si las MRs que han sido efectivas compartene ciertas características (por ejemplo, concentrarse en ciertas partes del problema).
+
+\begin{table}
+    \centering
+    \begin{tabular}{lrr}
+    \toprule
+    \textbf{Operator} & \textbf{G} &  \textbf{K} \\
+    \midrule
+C2D	    & 2	& 2 \\
+EQ2LE	& 1	& 1 \\
+GT2NE	& 1	& 1 \\
+LT2GT	& 1	& 1 \\
+NE2GT	& 1	& 1 \\
+
+    \midrule
+    % Mutation score = K / (G - E)
+    \textbf{Total} & 6 & 6  \\
+    \bottomrule
+    \end{tabular}
+    \caption{(G)enerated and (K)illed mutant counts after applying metamorphic relations}
+    \label{tab:mutant-counts2}
+\end{table}
+
+
+
+
+
+
+\section{Conclusion and future work}
+
+Resumen de lo presentado, y de las respuestas a las preguntas.
+
+Planes futuros.
+
+\section*{Acknowledgments}
+
+Reconocimientos de proyecto.
+
+\bibliographystyle{elsarticle-num}
+\bibliography{biblio}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+

@@ -1,0 +1,100 @@
+\begin{comment}
+  \begin{table}
+    \centering
+    \begin{tabular}{lrrr}
+    \toprule
+    \textbf{Operator} & \textbf{G} & \textbf{E} & \textbf{K} \\
+    \midrule
+    A2S & 5 & 1 & 4 \\
+    LT2NE & 1 & 1 & 0 \\
+    \midrule
+    % Mutation score = K / (G - E)
+    \textbf{Total} & 10 & 2 & 6 \\
+    \bottomrule
+    \end{tabular}
+    \caption{(G)enerated, (E)quivalent, and (K)illed mutant counts before applying metamorphic relations}
+    \label{tab:mutant-counts}
+\end{table}
+\end{comment}
+
+\begin{table}
+    \centering
+    \begin{tabular}{lrrr}
+    \toprule
+    \textbf{Operator} & \textbf{G} & \textbf{E} & \textbf{K} \\
+    \midrule
+%    A2S & 5 & 0 & 5 \\
+%    LT2NE & 1 & 1 & 0 \\
+
+
+A2DV	&	5	&	0	&	5	\\
+A2M	    &	5	&	0	&	5	\\
+A2S	    &	5	&	0	&	5	\\
+C2D	    &	2	&	0	&	0	\\
+CSWAP	&	1	&	0	&	1	\\
+D2C	    &	1	&	0	&	1	\\
+E2F	    &	1	&	0	&	1	\\
+EQ2GT	&	1	&	0	&	1	\\
+EQ2LE	&	1	&	0	&	0	\\
+EQ2LT	&	1	&	0	&	1	\\
+EQ2NE	&	1	&	0	&	1	\\
+F2E	&	4	&	0	&	4	\\
+GT2EQ	&	4	&	0	&	4	\\
+GT2LE	&	4	&	0	&	4	\\
+GT2LT	&	4	&	0	&	4	\\
+GT2NE	&	4	&	0	&	3	\\
+LE2EQ	&	4	&	0	&	4	\\
+LE2GE	&	4	&	0	&	4	\\
+LE2GT	&	4	&	0	&	4	\\
+LE2LT	&	4	&	0	&	4	\\
+LE2NE	&	4	&	0	&	4	\\
+LT2EQ	&	1	&	0	&	1	\\
+LT2GE	&	1	&	0	&	1	\\
+LT2GT	&	1	&	0	&	0	\\
+LT2LE	&	1	&	0	&	1	\\
+LT2NE	&	1	&	1	&	0	\\
+NE2EQ	&	1	&	0	&	1	\\
+NE2GT	&	1	&	0	&	0	\\
+NE2LE	&	1	&	0	&	1	\\
+NE2LT	&	1	&	0	&	1	\\
+S2A	    &	1	&	1	&	0	\\
+S2DV	&	1	&	0	&	1	\\
+S2M	    &	1	&	0	&	1	\\
+   
+    \midrule
+    % Mutation score = K / (G - E)
+    \textbf{Total} & 76 & 2 & 68 \\
+    \bottomrule
+    \end{tabular}
+    \caption{(G)enerated, (E)quivalent, and (K)illed mutant counts before applying metamorphic relations}
+    \label{tab:mutant-counts}
+\end{table}
+
+Después de esta evaluación, se analizan los operadores que todavía tienen mutantes vivos que son los 6 siguientes.
+
+Se aplican MR3 a estos 6 operadores y se mueren todos.
+
+Operador segunda vuelta	Localización op	MR3
+
+
+\begin{table}
+    \centering
+    \begin{tabular}{lrr}
+    \toprule
+    \textbf{Operator} & \textbf{G} &  \textbf{K} \\
+    \midrule
+C2D 	& 1	& 1 \\ 
+C2D	    & 2	& 1 \\
+EQ2LE	& 1	& 1 \\
+GT2NE	& 2	& 1 \\
+LT2GT	& 1	& 1 \\
+NE2GT	& 1	& 1 \\
+
+    \midrule
+    % Mutation score = K / (G - E)
+    \textbf{Total} & 8 & 8  \\
+    \bottomrule
+    \end{tabular}
+    \caption{(G)enerated and (K)illed mutant counts after applying metamorphic relations}
+    \label{tab:mutant-counts2}
+\end{table}
