@@ -1,0 +1,533 @@
+\input{preambulo}
+\usepackage{listings}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for theassociated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for theassociated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for theassociated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%% \title{Title\tnoteref{label1}}
+\title{Metamorphic Testing of Scheduling problems with constraints\tnoteref{t1}}
+\tnotetext[t1]{This work has been supported by the Spanish Ministry of Science and Innovation and the European Regional Development Fund (ERDF) (projects  RTI2018-093608-BC33 and RED2018-102472-T),
+% Luis y Sona
+the State Research Agency (AEI) of the Spanish Ministry of Science and Innovation under grant PID2021-122215NB-C31 (AwESOMe) and the Region of Madrid   under grant  S2018/TCS-4314 (FORTE-CM) co-funded by EIE Funds of the European Union.
+}
+
+
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \affiliation{organization={},
+%%             addressline={},
+%%             city={},
+%%             postcode={},
+%%             state={},
+%%             country={}}
+%% \fntext[label3]{}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{}
+%% \affiliation[label1]{organization={},
+%%             addressline={},
+%%             city={},
+%%             postcode={},
+%%             state={},
+%%             country={}}
+%%
+%% \affiliation[label2]{organization={},
+%%             addressline={},
+%%             city={},
+%%             postcode={},
+%%             state={},
+%%             country={}}
+
+
+\author[1]{M. Carmen de Castro-Cabrera \corref{cor1}}
+\ead{maricarmen.decastro@uca.es}
+\author[2]{Sonia Est\'evez-Mart\'{\i}n\corref{cor2}}
+\ead{soesteve@ucm.es}
+\author[2]{Luis Llana D\'{\i}az\corref{cor3}}
+\ead{llana@ucm.es}
+
+
+\cortext[cor1]{Corresponding author}
+%\cortext[cor2]{Corresponding author}
+%\cortext[cor3]{Corresponding author}
+
+\affiliation[1]{
+  organization={Department of Computer Engineering, University of Cadiz},
+   country={Spain}}
+
+\affiliation[2]{
+  organization={Computing Systems Department, Complutense University of Madrid}, country={Spain}}
+
+
+
+\begin{abstract}
+
+  \textbf{Context:} 
+  
+  \textbf{Objective:} 
+
+  \textbf{Method:} 
+
+  \textbf{Results:} 
+
+  \textbf{Conclusion:}
+
+\end{abstract}
+
+%%Graphical abstract
+%Sonia \begin{graphicalabstract}
+%Sonia \includegraphics{grabs}
+%Sonia \end{graphicalabstract}
+
+%%Research highlights
+%Sonia \begin{highlights}
+%Sonia \item Research highlight 1
+%Sonia \item Research highlight 2
+%Sonia \end{highlights}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+ Metamorphic Testing \sep Mutation Testing \sep Scheduling Problems \sep Constraint Programming \sep MiniZinc
+\end{keyword}
+
+\end{frontmatter}
+
+%% \linenumbers
+
+%% main text
+
+
+
+De la gente de Minizinc hay que revisar los artículos publicados en su web \url{https://www.minizinc.org/publications.html}. En concreto los que hablan de Resource-Constrained Project Scheduling Problem (RCPSP).
+
+\begin{itemize}
+    \item \textbf{Why cumulative decomposition is not as bad as it sounds (2009)} \cite{schutt2009cumulative}. Este artículo  habla de los \textit{resource-constrained project scheduling problem RCPSP}. En la sección 4 hay una definición que luego se extiende en artículos más recientes como \cite{BOFILL2020106777}. 
+    En la sección 3 tenemos \textit{Modelling the Cumulative Resource Constraint}.
+    Además, en el apéndice C hay un \textit{Zinc model of RCPSP} que contiene la estructura de los problemas RCPSP en Zinc. 
+
+    Note: MiniZinc, a smaller language that is a strict subset of Zinc.
+    
+    \item En \url{https://github.com/MiniZinc/minizinc-benchmarks/blob/master/rcpsp/rcpsp.mzn} se describe:
+    \textit{Model example for Resource-Constrained Project Scheduling Problems (RCPSP).
+ A RCPSP consists of resources, tasks, and precedences between some tasks where resources have of a specific capacity and tasks need some capacity of some resource to be executed.
+ Here, we consider resources with a constant discrete capacity over time and tasks with a constant discrete duration and resource requirements.
+ The objective is to find a optimal schedule with respect to the earliest end time of the schedule where the tasks' resource requirements do not exceed the resource capacities to any time and each precedence is met}. Además, el código está en las Figuras \ref{fig:Model-RCPSP-1} y \ref{fig:Model-RCPSP-2}. 
+
+
+    
+
+    \item En la web de la gente de Minizinc hay un artículo de Miquel Bofill, Josep Suy, Mateu Villaret. \textbf{A System for Solving Constraint Satisfaction Problems with SMT (2010)}.
+    Estos mismos autores tienen un artículo más reciente \textbf{SMT encodings for Resource Constrained Project Scheduling Problems (2020)} 
+\cite{BOFILL2020106777}. En este último,  
+la definición de RCPSP (Subsección 4.1) es bastante aproximada a la que tenemos en nuestro artículo. En los apartados 4.2 y 4.3 se definen dos extensiones MRCPSP y RCPSP/t.
+%    \item Scheduling Optional Tasks with Explanation.
+\end{itemize}
+
+
+
+\begin{figure*}
+    \begin{lstlisting}
+% Model parameters.
+ 
+  % Resources
+    int: n_res;                     % The number of resources
+    set of int: Res = 1..n_res;     % The set of all resources
+    array [Res] of int: rc;         % The resource capabilities
+    
+  % Tasks
+    int: n_tasks;                           % The number of tasks
+    set of int: Tasks = 1..n_tasks;         % The set of all tasks
+    array [Tasks]      of int       : d  ;  % The task durations
+    array [Res, Tasks] of int       : rr ;  % The resource requirements
+    array [Tasks]      of set of int: suc;  % The task successors
+    
+  % Planning horizon
+    int: t_max = sum(i in Tasks)(d[i]);     % End time of the planning horizon
+    set of int: Times = 0..(t_max - 1);     % Possible start times
+    
+% Model variables.
+
+    array [Tasks] of var Times: s;  % The start times
+    var 0..t_max: objective      ;  % The project duration (makespan)
+    
+% Constraints.
+
+  % Precedence constraints
+    constraint forall ( i in Tasks, j in suc[i] )
+       ( s[i] + d[i] <= s[j] );
+    
+  % Redundant non-overlapping constraints
+    constraint forall ( i, j in Tasks where i < j )
+        (if exists(r in Res)(rr[r, i] + rr[r, j] > rc[r]) then
+                s[i] + d[i] <= s[j]   \/ s[j] + d[j] <= s[i]
+            else
+                true
+            endif
+        );
+    
+  % Cumulative resource constraints
+    constraint forall ( r in Res )
+        (  let { set of int: RTasks = { i | i in Tasks 
+                                where rr[r, i] > 0 /\ d[i] > 0 },
+                int: sum_rr = sum(i in RTasks)(rr[r, i])
+            } in (if RTasks != {} /\ sum_rr > rc[r] then
+                    cumulative(
+                        [ s[i] | i in RTasks ],
+                        [ d[i] | i in RTasks ],
+                        [ rr[r, i] | i in RTasks ],
+                        rc[r]
+                    )
+                else
+                    true
+                endif
+            )
+        );
+\end{lstlisting}
+\caption{Model for Resource-Constrained Project Scheduling Problems (RCPSP). Source: University of Melbourne and NICTA.}
+\label{fig:Model-RCPSP-1}
+\end{figure*}
+
+\begin{figure*}
+    \begin{lstlisting}
+  % Makespan constraints
+    constraint forall ( i in Tasks where suc[i] == {} )
+       ( s[i] + d[i] <= objective );
+    
+% Objective.
+    solve :: int_search( s ++ [objective], smallest, indomain_min, complete )
+       minimize objective;
+\end{lstlisting}
+\caption{Model for Resource-Constrained Project Scheduling Problems (RCPSP). Source: University of Melbourne and NICTA.}
+
+\label{fig:Model-RCPSP-2}
+\end{figure*}
+
+
+Los problemas RCPSP han sido relevantes y se han 
+extendido.
+
+
+\begin{itemize}
+
+\item \textbf{Extensions of the resource-constrained project scheduling problem. 2023.}
+\cite{DING2023104958}
+
+
+    \item \textbf{Resource-constrained project scheduling problem: review of past and recent developments (2018)} \cite{habibi2018resource} hace una clasificación, Ver Figura \ref{fig:Classification}.
+
+\item \textbf{An updated survey of variants and extensions of the resource-constrained project scheduling problem (2022)} \cite{hartmann2022updated}.
+
+\item En la web de MiniZinc también hay un trabajo de RCPSP/max que es una extensión de RCPSP:
+    \textbf{Solving RCPSP/max by lazy clause generation}. \cite{schutt2013solving}.  
+
+\item En la web del (\url{https://www.om-db.wi.tum.de/psplib/data.html})  encuentro la siguiente clasificación:
+    
+
+\begin{itemize}
+    \item Resource-Constrained Project Scheduling Problem (RCPSP)
+
+    \item Resource-Constrained Project Scheduling Problem with Minimal and Maximal Time Lags (RCPSP/max)
+
+    \item Multi-Mode Resource Constrained Project Scheduling Problem (MRCPSP)
+
+    \item Multi-Mode Resource Constrained Project Scheduling Problem with Minimal and Maximal Time Lags (MRCPSP/max)
+
+    \item Resource Investment Problem with Minimal and Maximal Time Lags (RIP/max)
+
+    \item Resource-constrained project scheduling problem with time-dependent resource 
+
+    \item FRCPSP instances and user solutions
+
+\end{itemize}
+\end{itemize}
+
+
+
+\begin{figure*}
+    \centering
+    \includegraphics[scale=0.5]{Figures/Classification-of-resource-constrained-project-scheduling-problems.png}
+    \caption{Clasificación de RCPSP del artículo: Resource-constrained project scheduling problem: review of past and recent developments (2018)}
+    \label{fig:Classification}
+\end{figure*}
+
+
+
+
+Y ahora la gran pregunta...
+¿RCPSP sirve para otros problemas y aplicaciones reales?
+
+\begin{itemize}
+    \item Uso de la energía \textbf{Energy-cost-aware resource-constrained project scheduling for complex product system with activity splitting and recombining (2021)} \cite{du2021energy}. El abstract dice: \textit{"This paper presents a new variant of resource-constrained project scheduling problem (RCPSP), which is named energy-cost-aware resource-constrained project scheduling problem with activity splitting and recombining (eRCPSP-AS\&R) for CoPS"}.
+    
+    \item Eficiencia energética \textbf{An Optimization of Energy-Efficiency in Machining Manufacturing Systems Based on a Framework of Multi-Mode RCPSP (2016)} \cite{samukawa2016optimization}. El abstract dice: \textit{This paper extends authors’ previous work to a more practical situation to demonstrate the applicability of the proposed framework of energy-efficient manufacturing opera- tions based on a resource-constrained project scheduling problem (RCPSP)}.
+    
+
+    \item \textbf{Quantum-Inspired Genetic Algorithm for Resource-Constrained Project-Scheduling (2021)} \cite{saad2021quantum}.
+
+    \item \textbf{Solving the resource constrained project scheduling problem with quantum annealing. 2024.} \cite{perez2024solving}
+
+\item El trabajo \cite{schutt2009cumulative} dice: \textit{Open-Shop-Job problems which is a special case for Rcpsp}. Así lo podemos relacionar con
+\textbf{A review of Green shop scheduling problem}  \cite{li2022review},
+%\url{https://doi.org/10.1016/j.ins.2021.12.122}
+\textbf{A green scheduling algorithm for flexible job shop with energy-saving measures}
+\cite{wu2018green},
+Subsección 2.3. Energy-efficient scheduling de \textbf{A method for minimizing the energy consumption of machining system: integration of process planning and scheduling} \cite{zhang2016method}
+
+\item Queda por mirar...
+
+\begin{itemize}
+    \item Energy-efficient permutation flow shop scheduling problem using a hybrid multi-objective backtracking search algorithm
+
+    \item Dynamic rescheduling in FMS that is simultaneously considering energy consumption and schedule efficiency
+\end{itemize}
+
+\end{itemize}
+
+
+Con restecto a los códigos
+
+\begin{itemize}
+    \item Tenemos un listado de los problemas de Minizinc donde está detalladas las funciones que se usa, como por ejemplo \texttt{cumulative}.
+
+\url{https://www.minizinc.org/mznc_list_of_problems_and_globals.html}
+
+    \item El github de Minizinc.
+
+\url{https://github.com/MiniZinc}
+
+    \item Con sus benchmarks
+
+\url{https://github.com/MiniZinc/minizinc-benchmarks}
+
+    \item otra página con muchos ejemplos de minizinc es:
+
+\url{http://www.hakank.org/minizinc/}
+
+    \item MiniZinc Tutorial Files, pues eso... todos los códigos usados en el tutorial de minizinc.
+
+\url{https://people.eng.unimelb.edu.au/pstuckey/COMP90046/resources/models/index.html}
+
+\item Ejemplos tomados por temática (los que usamos en nuestro paper).
+
+\url{https://github.com/MiniZinc/specialization-examples}
+
+\end{itemize}
+
+
+
+
+
+Por otra parte...
+Handbook of Constraint Programming \cite{GlobalConstraints}
+(pdf en la carpeta 'papers' del overleaf). Ver:
+
+\begin{itemize}
+    \item 22.1 Constraint Programming Models for Scheduling.
+
+    \item 7.2.6 Scheduling with Cumulative Resource Constraints. Definición que nos pueder servir para Cumulative. 
+
+    \item 15.6.4 Cumulative Constraint.
+
+    \item 15.11.3 Example: Planning and Scheduling
+
+\end{itemize}
+
+
+Una definición del "Flexible job shop scheduling problem está dada en:
+A research survey: review of flexible job shop scheduling techniques.
+Imran Ali Chaudhry, Abid Ali Khan
+First published: 07 August 2015 
+\url{https://doi.org/10.1111/itor.12199}.
+
+
+
+Deterministic job-shop scheduling: Past, present and future (1999)
+\url{https://doi.org/10.1016/S0377-2217(98)00113-1}
+
+A survey of dynamic scheduling in manufacturing systems (2008)
+\url{https://doi.org/10.1007/s10951-008-0090-8}. Sonia - No veo nada interesante.
+
+Genetic programming for production scheduling: a survey with a unified framework
+\url{https://doi.org/10.1007/s40747-017-0036-x}. Sonia - No veo nada interesante.
+
+
+The hybrid flow shop scheduling problem
+\url{https://doi.org/10.1016/j.ejor.2009.09.024}
+
+
+Datos de ejecución de jobshop:
+\url{https://github.com/hakank/hakank/tree/master/minizinc/jobshop_data}
+
+
+
+\section{Empirical Evaluation}
+\label{sec:Empirical Evaluation}
+In order to evaluate our proposal, the mutation testing technique will be used. At present,
+there is no mutation system for Minizinc. Therefore, we have designed and implemented a 
+set of mutation operators suitable for MiniZinc, which allowed us to generate mutants to validate the proposal.
+
+\subsection{Mutant operators}
+This subsection describes the mutation operators defined for Minizinc. Thirty-nine different mutation operators have been designed and implemented, classified into the following 5 categories according to the nature of the operator to which it is related: relational, logical, arithmetic, quantifier and parameter substitution operators. Each operator, named with capital letters and optionally a number, follows a terminology about the original operator of the MiniZinc program and the operator by which it is replaced, being always of the same category. For instance, 'GE2LT', means that the 'greater than or equal to' operator is replaced by the 'less than' operator. It should be noted that several operators exclusive to the MiniZinc language have been designed and implemented: on the one hand, the category of operators that exchange quantifiers 'forall' for 'exists' (and vice versa); and on the other hand, the parameter substitution operator, named 'CSWAP', which swaps parameters 2 and 3 of the MiniZinc predefined function 'cumulative'.
+
+%\subsection{Mutant generation}
+
+Specifically, faults were seeded applying traditional mutation operators, including arithmetic (AOR), logical(LCR) and relational(ROR)  and parameter-swapping  mutation operators~\cite{PAPADAKIS2019275}. 
+%Furthermore, a new MiniZinc-specific mutation operator has been created. It replaces one quantified with another quantified.
+Once the mutation system has been implemented with the above set of operators, for the MiniZinc language and the characteristics of the scheduling programs, a set of mutation operators described below have been selected. The application of  operators to several examples of scheduling problems implemented in MiniZinc is shown.
+
+ 
+\begin{description}
+    %\item[MUT$\leq$]
+    \item[LE2LT] Changing the relational operator \lstinline|<=|  by  \lstinline|<|.
+      The application of this operator appears in the mutant
+      \url{https://github.com/LuisLlana/metamorphic_testing_constrints/blob/main/MR%201/basic-MUT-%3C%3D-%3C.mzn}.
+    \begin{framed}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+start[pre[i,1]] + duration[pre[i,1]] <= start[pre[i,2]]
+\end{lstlisting}
+      \vskip -2em
+      \centering$\Updownarrow$
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+start[pre[i,1]] + duration[pre[i,1]] < start[pre[i,2]]
+\end{lstlisting}
+    \end{framed}
+%%% Este es nuevo:
+%\item[MUT$\geq$]
+\item[LE2GE] Changing the relational operator \lstinline|<=|  by  \lstinline|>=|.
+      The application of this operator appears in the mutant
+      %\url{https://github.com/LuisLlana/metamorphic_testing_constrints/blob/main/MR%201/basic-MUT-%3C%3D-%3C.mzn}.
+    \begin{framed}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+start[pre[i,1]] + duration[pre[i,1]] <= start[pre[i,2]]
+\end{lstlisting}
+      \vskip -2em
+      \centering$\Updownarrow$
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+start[pre[i,1]] + duration[pre[i,1]] >= start[pre[i,2]]
+\end{lstlisting}
+    \end{framed}
+%% Este también es nuevo:
+%\item[MUT$\geq$] 
+ \item[LE2EQ]Changing the relational operator \lstinline|<=|  by  \lstinline|==|.
+      The application of this operator appears in the mutant
+      %\url{https://github.com/LuisLlana/metamorphic_testing_constrints/blob/main/MR%201/basic-MUT-%3C%3D-%3C.mzn}.
+    \begin{framed}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+start[pre[i,1]] + duration[pre[i,1]] <= start[pre[i,2]]
+\end{lstlisting}
+      \vskip -2em
+      \centering$\Updownarrow$
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+start[pre[i,1]] + duration[pre[i,1]] == start[pre[i,2]]
+\end{lstlisting}
+    \end{framed}
+    
+%\item[MUT$\forall\exists$] 
+  \item[F2E] Changing universal and existential quantifiers.
+      The application of this operator appears in the mutant
+      \url{https://github.com/LuisLlana/metamorphic_testing_constrints/blob/main/MR%202/basic-MUT-forall-exists.mzn}.
+    \begin{framed}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+constraint exists(i in PREC)
+\end{lstlisting}
+      \vskip -2em
+      \centering$\Updownarrow$
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+constraint forall(i in PREC)
+\end{lstlisting}
+    \end{framed}
+
+    %\item[MUT$\wedge\vee$]
+    \item[D2C]Changing disjunctions by conjunctions. The application of
+      this operator appears in the mutant
+      \url{https://github.com/LuisLlana/metamorphic_testing_constrints/blob/main/MR%203/jobshopMUT-and-or.mzn}.
+
+    \begin{framed}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+(s[i,j]+d[i,j]<=s[i,enum_next(TASK,j)]) \/
+\end{lstlisting}
+      \vskip -2em
+      \centering$\Updownarrow$
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+(s[i,j]+d[i,j]<=s[i,enum_next(TASK,j)]) /\
+\end{lstlisting}
+    \end{framed}
+\begin{lstlisting}
+\end{lstlisting}
+
+\item[CSWAP$\Leftrightarrow$] Interchanging parameters in function calls. In this case applied to the function "cumulative".
+ The application of this operator appear in the mutant
+  \url{https://github.com/LuisLlana/metamorphic_testing_constrints/blob/main/MR%204/movingMUThandlers.mzn}.
+    \begin{framed}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont,
+  emph={handlers,duration}, emphstyle={\underbar}]
+constraint cumulative(start, handlers, duration, available_handlers);
+\end{lstlisting}
+      \vskip -2em
+      \centering$\Updownarrow$
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{7}{9}\selectfont,
+  emph={handlers,duration}, emphstyle={\underbar}]
+constraint cumulative(start, duration, handlers, available_handlers);
+\end{lstlisting}
+    \end{framed}
+
+  \end{description}
+
+\subsection{Mutants generation}
+Regarding the mutants generated, the notation mut-MO-N.mzn is followed, where MO indicates the name of the mutation operator applied, and N, the occurrence of this operator in the original minizinc model.
+
+We have generated 77 mutants of the rcpsp.mzn model by applying
+the mutation operators described above. \url{ https://github.com/LuisLlana/metamorphic_testing_constrints/tree/main/experiments/benchmarks/Mutants}\\
+Such mutants will be run with both the original test suite and the follow-up
+tests suite, obtained by the application of the defined  MRs. 
+
+
+%%% Referencia al survey de Papadakis
+% PAPADAKIS2019275
+
+\subsection{Test cases generation}
+
+
+\input{Sections/Results}
+
+%En la ayuda de un error de overleaf me ha dicho: \textit{Pretend that you're Hercule Poirot: Examine all clues, and deduce the truth by order and method.}
+
+%Es decir, \textit{Imagina que eres Hércules Poirot: examina todas las pistas,
+% y deducir la verdad por orden y método.}
+
+
+
+
+
+%\input{Sections/...}
+
+
+
+
+ \bibliographystyle{elsarticle-num}
+ \bibliography{biblio}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+
