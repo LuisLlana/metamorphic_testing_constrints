@@ -1,0 +1,137 @@
+
+
+\onecolumn
+
+
+\section{Car sequencing problem}
+
+Este problema tiene mucha literatura.
+En el ejemplo se cita a \cite{regin1997filtering} y este trabajo cita a
+\cite{dincbas1988solving}.
+
+Descripción: \textit{ "A number of cars are to be produced; they are not identical, 
+because different options are available as variants on the basic model. 
+ The assembly line has different stations which install the various options (air-conditioning, sun-roof, etc.). 
+ These stations have been designed to handle at most a certain percentage of 
+ the cars passing along the assembly line. 
+ Furthermore, the cars requiring a certain option must not be bunched together, 
+ otherwise the station will not be able to cope. Consequently, the cars must be 
+ arranged in a sequence so that the capacity of each station is never exceeded. 
+ For instance, if a particular station can only cope with at most half of the 
+ cars passing along the line, the sequence must be built so that at most 1 car in any 2 requires that option."}
+
+\begin{figure}[!htb]
+\begin{center}
+\begin{tikzpicture}
+
+ \node [mynode](I) at (-3.8,1) {$i_{1}$ (\lstinline|car_test_0.dzn|) };
+ \node [mynode](O) at (-3.8,-1.1) {$o_{1}<\infty$};
+
+ \node [mylabel](code) at (0,-0.3) {\lstinline|carseq.mzn|};
+ \node [mynode](I') at (3.8,1) {$i_{2}$ (\lstinline|car_test_0-fu-k.dzn|)};
+ \node [mynode](O') at (3.8,-1.1) {$o_{2} =\infty$};
+
+ \draw[myarrow](I) -- (O);
+ \draw[myarrow](I') -- (O');
+
+ \node [mynode,below= -0.2cm of I] (Icaption) {
+\begin{tabular}{c}
+%    n\_cars =  12\\
+    k = [2, 3, 3, 5, 5]
+\end{tabular}
+  };
+  
+% \node [mynode,below= -0.2cm of I] (Icaption) {n\_cars =  12};
+% \node [mynode,below= -0.5cm of I] (Icaption2) {n\_cars\_by\_confs = [4, 1, 1, 2, 1, 1, 2]};
+ \node [mynode,below= -0.2cm of I'] (I'caption) {k = [5, 5, 5, 5, 5]};
+
+\end{tikzpicture}
+\subcaption{Original program execution}
+\label{Fig:MR4 carseq-con-mas-handlers-a}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}
+ \node [mynode](I) at (-4,1) {$i_{1}$ (\lstinline|car_test_0.dzn|)};
+ \node [mylabel](code) at (0,-0.3) {\lstinline|carseqMUT-forall-exists.mzn|};
+ \node [mynode](I') at (4,1) {$i_{2}$ (\lstinline|car_test_0-fu-k.dzn|)};
+
+ \node [mynode](O) at (-4,-1.2) {$o_{1} <\infty$};
+ \node [mynodeRed](O') at (4,-1.2) {$o_{2}<\infty$};
+
+ \draw[myarrow](I) -- (O);
+ \draw[myarrow](I') -- (O');
+
+ \node [mynode,below= -0.2cm of I] (Icaption) {k = [2, 3, 3, 5, 5]};
+ \node [mynode,below= -0.2cm of I'] (I'caption) {k = [5, 5, 5, 5, 5]};
+\end{tikzpicture}
+\subcaption{Mutation execution}
+\label{Fig:MR4 carseq-con-mas-handlers-b}
+\end{center}
+\caption{Metamorphic relation MR4 and mutation execution}
+\label{Fig:MR4 carseq-con-mas-handlers}
+\end{figure}
+
+
+¿¿ Qué es  \texttt{k} ??
+
+Veamos un ejemplo con los datos \texttt{car\_test\_0.dzn}:
+
+\begin{verbatim}
+Problem description: 
+	 number of cars = 10
+	 number of options =  5
+	 number of configurations =  7
+	 k =  [2, 3, 3, 5, 5]
+	 min capacity =  [0, 0, 0, 0, 0]
+	 max capacity =  [1, 2, 1, 2, 1]
+	 number of cars in configurations  =  [2, 1, 1, 2, 1, 1, 2]
+	 confs  = [1, 0, 0, 1, 0, 
+           0, 0, 0, 1, 0, 
+           0, 1, 0, 0, 0, 
+           1, 0, 0, 0, 0, 
+           0, 0, 0, 0, 1, 
+           0, 1, 0, 1, 0, 
+           0, 0, 1, 0, 0]
+ 
+Solution: 
+	 cars = [1, 6, 4, 7, 5, 2, 7, 4, 3, 1]
+	 options by cars = [1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 
+                    0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 
+                    0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 
+                    1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 
+                    0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+\end{verbatim}
+
+
+\texttt{k} es el tamaño de la secuencia de coches que se requiere para no colapsar las estaciones. Es decir,
+en la matriz de \texttt{options by cars}, para 
+cada subsecuencia de tamaño  k =  [2, 3, 3, 5, 5] la suma de sus números (0/1) debe ser \texttt{>= (min capacity =  [0, 0, 0, 0, 0])} y   \texttt{ <= (max capacity =  [1, 2, 1, 2, 1])}.
+
+Por lo tanto el follow-up hay que construirlo de tal forma que si el tamaño de k o secuencia de coches, es mayor que el número de coches entonces podemos aplicar la MR3.
+
+Desglosado:
+\begin{itemize}
+    \item En la primera fila de la matriz, la suma de cada subsecuencia de tamaño 2 es $<=$ 1.
+    \item En la segunda fila de la matriz, la suma de cada subsecuencia de tamaño 3 es $<=$ 2.
+    \item En la tercera fila de la matriz, la suma de cada subsecuencia de tamaño 3 es $<=$ 1.
+    \item En la cuarta fila de la matriz, la suma de cada subsecuencia de tamaño 5 es $<=$ 2.
+    \item En la quinta fila de la matriz, la suma de cada subsecuencia de tamaño 5 es $<=$ 1.
+\end{itemize}
+
+
+Observación: si ejecuto el mutante con \texttt{k =  [5, 5, 5, 5, 5]} o \texttt{k =  [6, 6, 6, 6, 6]}, 
+entonces $i_1$ es UNSATISFIABLE y el foolow-up $i_2$ es una solucióncualquiera, cuando debería ser insatisfactible.
+
+Si aunmento a \texttt{k = [7, 7, 7, 7, 7]}, entonces son UNSATISFIABLE tanto $i_1$ como el foolow-up $i_2$.
+
+\medskip
+\medskip
+
+Probar con el resto de test  disponibles en 
+\url{https://github.com/MiniZinc/minizinc-benchmarks}
+
+
+\section{Carpet cutting problem}
+
+Tarda demasiado tiempo,... pienso que hay algo mal, quizás es otro resolutor,... esun ejercicio antiguo,  
