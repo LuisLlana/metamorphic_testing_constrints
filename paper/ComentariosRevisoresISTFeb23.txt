@@ -1,0 +1,72 @@
+
+Editor's Summary
+
+The comments from two of the three reviewers are not only in-depth with sufficient details but also very much negative. Although less critical, another reviewer is still concerned about the technical merit and contribution of this paper. Considering all the factors, the recommendation for this paper is Reject. Authors are encouraged to read the comments for more details.
+
+Below is a summary of the major critics.
+
+It is not clear whether this paper has significant technical contributions to the research topic. From the writing of the current version, it looks like a simple application of metamorphic testing to a specific area. Multiple reviewers (including the reviewer who is the least critical) indicate that the paper is hard to follow because of the presentation. They also have questions about the originality and novelty of the paper and point out that the objective of the paper is not clear.
+
+The experiment is not clearly explained. Lots of details are missing. For example, how many mutants are constructed? How many test cases are generated? The current writing only mentions a few mutants and several test cases. Are all the mutants and test cases used for the experiment mentioned? If yes, the scale of the experiment is too small to give any meaningful conclusion. If not, why is such important data not included in the paper?
+
+The focus of this paper is to use metamorphic testing on scheduling problems. Since there are many testing techniques, what are the pros and cons of using metamorphic testing compared against other techniques? Are there any special or unique features of metamorphic testing which make it the most appropriate technique for testing scheduling problems? If yes, please explain. Note that the explanation should not only discuss the positive side but also include the limitations of using metamorphic testing. If not, what is the motivation of pursuing metamorphic testing?
+
+In Section 1 (Introduction), it says that “… but we focus on the techniques of constraint satisfaction in scheduling from the Artificial Intelligence point of view ….." However, one reviewer wrote “. . . . after reading the whole paper, I couldn't find how this paper is related to AI.” More details are needed to make this point clear.
+
+=========================================
+Reviewer #1:
+
+In this paper, the authors present their work on applying metamorphic testing into the testing of some scheduling problems written in a particular constraint modeling language, namely MiniZinc. Some metamorphic relations have been proposed and experimental studies show that these metamorphic relations can help kill mutants and even detect a real-life bug.
+One major problem with the paper is whether it has significant contributions to the research area. At least from the current writing, it is a simple application of metamorphic testing into an area. Metamorphic testing has been widely applied into a wide range of application domains, and its high applicability and fault-detection effectiveness have been well recognized. Another application study of metamorphic testing is not significant enough for being published in the prestigious IST journal, unless there are some breakthroughs (either in the applied area or in metamorphic testing).
+The experiment was not presented very well. Much more details should be added. The reviewer would like to suggest that the authors refer to the literature about how to conduct and write for empirical software engineering and then fully re-write the sections for experimental studies and results. Regarding the results, how many mutants have been constructed? How many test cases have been created totally? The current writing only mentions a few mutants and several test cases. Are they all the authors have produced or just illustrative examples? If the former, the scale of the experiment is very small; if the latter, the authors should present all results (which can be summarized concisely yet scientifically).
+The overall presentation also requires substantial improvement. One simple example is: In the introduction, the authors talk about scheduling problems, and then directly claim that they would use metamorphic testing for this topic. But why? There are many testing techniques in the literature. Does metamorphic testing have some unique feature such that it is the only testing technique suitable for testing scheduling problems? If yes, what is it? If not, what are other suitable techniques and why weren't they used in this study? In a word, no strong motivation was presented as the basis of the study.
+To summarize, the paper needs lots of significant revisions to meet the standard of the journal.
+
+=========================================
+Reviewer #2:
+
+The paper presents a metamorphic testing approach to testing of declarative CSP descriptions in MiniZinc. In particular, the approach employs mutation so as to check whether the introduced metamorphic Relations are useful to detect faults in the CSP descriptions. The paper also reports that the method was able to find that a particular MiniZinc version contains bugs in it, which is very interesting; debugging MiniZinc is usually difficult.
+
+The paper is a bit hard to follow the contents, because the presentation of the problem of metamorphic testing for the purpose of the paper is not clear. A new section is desirable to summarize the metamorphic testing problem formally; the presentations in Section 3 and 4 are quite nice in that they provide the presentations of the background materials formally. The new section would compare standard notions of the metamorphic testing with the paper's problem formulation.
+
+Furthermore, it is desirable not to use some basic terms intuitively, for example, test case, follow-up test cases, execution, and so on. In particular, the follow-up is desirable to be accompanied with formal definitions.
+
+=========================================
+Reviewer #4:
+
+After reading the paper, I recommend a "rejection". My comments are as follows:
+
+Major comments:
+
+= Overall, the writing needs to be significantly improved. With its current version, I find difficult to understand or follow the flow of argument in various places of the paper. I suggest to have a native English speaker to proof-read the paper before the next submission (if this paper will go to the second-round review).
+
+= I question about the originality and novelty of the paper. As stated in Section 2 (Related Work), applying MT to test constraint programming systems or scheduling problems have been well researched by others. This paper has the same focus. In Section 2, the authors argue that "in our case, the context is totally different, as well as the code to be tested". Although this paper uses some scheduling programs written in MiniZinc which were not covered in other previous studies, it does not change the reality that this paper still addresses the application of MT to test constraint programming systems in the scheduling context. This is one of my main concerns for proposing rejecting this paper. Frankly speaking, considering the extent of originality and novelty of the paper, I personally think that this paper is only up to the standard of a conference-paper (at best), but not a journal article.
+
+= In Section 1 (Introduction), the authors argue that "… but we focus on the techniques of constraint satisfaction in scheduling from the Artificial Intelligence point of view [4]." However, after reading the whole paper, I couldn't find how this paper is related to AI.
+
+= In Section 5 (Mutants), only 4 mutants were generated for the experiment. Here I have several major concerns:
+
+* The number of mutants used was too small.
+* The scheme for generating these mutants was not clearly specified.
+* Who generated these mutants? Was the person responsible for generating these mutants the same person to define the MRs? If it was, then I doubt very much about the validity and credibility of the experiment result. This was because this person could generate mutants based on his/her prior knowledge of MRs and, hence, these defined mutants had higher chances to be detected by MT.
+
+= Section 6, RQ2 "Could our approach be useful to extend it to other programs that implement scheduling (in declarative languages or not)?" I don't think this RQ2 has any value which needs further investigation. In your Section 2, you have already mentioned some other works which use MT to test scheduling problems (e.g., [18]). In this case, the answer to RQ2 is already very clear (which is a "Yes"). So, what is the value of RQ2?
+
+(Relatively) Minor comments:
+
+= In Section 1, the first para should be totally rewritten. Two reasons: (a) I don't think it is a good idea to cite a journal (Journal of Scheduling) to support the importance of scheduling problems in project management. (b) The journal to which this paper is submitted is IST, which is a journal related to software (not scheduling nor project management).
+
+= In Section 1, the beginning of the 4th para needs to be rewritten. Here, the authors argue that the goal of MT is to generate follow-up test cases from source test cases. This is not entirely correct and, hence, could be misleading. When MT was first developed, the goal was exactly what you argue (i.e., generating follow-up test cases from source test cases). However, MT was quickly evolved so that its primary goal is to "test the correctness of the program" by comparing the results of the follow-up test cases and source test cases (with reference to the relevant MRs). I would suggest the author to thoroughly read reference [11] again to comprehend the concept of MT.
+
+Also, in the same para, the last sentence is wrong. The authors say "Hence, Minizinc has been applied to "SUPPORT" MT [13]." This sentence is wrong and needs to be corrected. Your paper discusses how to use MT to "TEST" Minizinc programs.
+=========================================
+
+
+
+COMENTARIOS DE Manuel Nuñez:
+
+olín…no me he leído el paper con detalle pero creo que muchas de las cosas que os dicen los revisores hay que corregirlas y luego hay una parte, que también critican los revisores, de vender más la moto para explicar por qué esto es útil (y novedoso). En particular, lo de decir que se hacen 4 mutantes, un9 por MR, y listos… hombre, en mutation testing haces miles de mutantes, así que suena raro (suena a poco). Yo creo que el,enfoque sería coger unos cuantos problemas (2 o 3, como hacéis) hacer n mutantes de cada problema, tener m inputs para cada problema, y calcular las 4 MRs para cada mutante y cada input (vamos, hacer 4 * 2 o 3 * m * n aplicaciones de regla metamórfica) y analizar que MR falla más veces (esa es la mejor para detectar errores), cuantos mutantes se matan (hay equivalentes?), etc.
+
+También hay sitios donde el inglés…. Por ejemplo, Expose es exponer pero en el sentido de  mostrar algo oculto (e.g. un escándalo de corrupción).
+
+ Es importante también que indiquéis muy claramente la novedad y dificultad de lo que se hace (seguramente se puede destacar que a efectos prácticos no hay un oráculo de lo que te tiene que dar porque estos problemas son exponenciales).

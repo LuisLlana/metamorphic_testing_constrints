@@ -1,0 +1,50 @@
+\lstdefinelanguage{minizinc}{
+    morekeywords={
+        %% MiniZinc keywords
+        %%
+        ann, annotation, any, array, assert,
+        bool,
+        constraint,
+        else, elseif, endif, enum, exists,
+        float, forall, function,
+        if, in, include, int,
+        list,
+        minimize, maximize,
+        of, op, output,
+        par, predicate,
+        record,
+        set, solve, string,
+        test, then, tuple, type,
+        var,
+        where,
+        %% MiniZinc functions
+        %%
+        abort, abs, acosh, array_intersect, array_union,
+        array1d, array2d, array3d, array4d, array5d, array6d, asin, assert, atan,
+        bool2int,
+        card, ceil, combinator, concat, cos, cosh,
+        dom, dom_array, dom_size, dominance,
+        exp,
+        fix, floor,
+        index_set, index_set_1of2, index_set_2of2, index_set_1of3, index_set_2of3, index_set_3of3,
+        int2float, is_fixed,
+        join,
+        lb, lb_array, length, let, ln, log, log2, log10,
+        min, max,
+        pow, product,
+        round,
+        set2array, show, show_int, show_float, sin, sinh, sqrt, sum,
+        tan, tanh, trace,
+        ub, and ub_array,
+        %% Search keywords
+        %%
+        bool_search, int_search, seq_search, priority_search,
+        %% MiniSearch keywords
+        %%
+        minisearch, search, while, repeat, next, commit, print, post, sol, scope, time_limit, break, fail
+    },
+    sensitive=true, % are the keywords case sensitive
+    morecomment=[l][\em]{\%},
+    %morecomment=[s]{/*}{*/},
+    morestring=[b]",
+}
