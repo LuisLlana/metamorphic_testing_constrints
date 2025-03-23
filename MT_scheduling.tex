@@ -257,14 +257,19 @@ Despite the fact that MT has been applied to multiple domains and programs ~\cit
 
 
 \subsection{Mutation testing}
+%% Sección 2.3
 %% Referencias mutación:
 %%% Review: PAPADAKIS2019275, parsai2literature
 %%% Operadores de mutacion: (1996) Offutt96OpMut, Mresa99OpMut, PapadakisM10, puig2010equivalencias
+Mutation testing is a well-known and widely applied software testing technique. It enjoys broad acceptance within the academic community, demonstrating a certain maturity, and has been the subject of numerous publications~\cite{parsai2literature, PAPADAKIS2019275}. Essentially, it involves assessing the quality of a test suite by executing them against modified versions of the original program, known as mutants. These mutants are created by injecting common programmer faults into the original code. To generate these mutants, mutation operators are defined, which specify the changes to be made in the program. For example, arithmetic operators can replace one instance of an arithmetic operator with another of the same type (e.g., replacing 'a +' with 'a -', or vice versa). Implementing these mutation operators and generating numerous mutants can be computationally expensive. Consequently, these operators have been extensively studied for various programming languages. Research has shown, among other findings, that a reduced set of these operators can yield good results in most systems~\cite{Offutt96OpMut}.
 
+While these operators target different possible defects, they also incur a cost in the mutation testing process: their mutants need to be generated, and test cases have to be run against them. It is known from the literature that \emph{selective mutation testing} (using only some of the mutants) can have similar testing effectiveness as the full set of mutation operators, for a fraction of the cost~\cite{Mresa99OpMut}.
+
+The literature has also recognised that not all mutants are of the same value: some mutants are killed by most test cases we can come up with, whereas others require very specific test cases, and others are equivalent to the test program. Specifically, Papadakis et al.\ argued against using \emph{subsumed mutants} on experimental studies based on mutation testing, as they could skew the results~\cite{papadakis_threats_2016}. According to Ammann et al.~\cite{ammann_establishing_2014}, mutant $x$ dynamically subsumes mutant $y$ if $x$ has been killed and every test that kills $x$ also kills $y$. These subsumed mutants are redundant for the purposes of designing test cases, and can be safely discarded (e.g. by refining the definition of the mutation operator, or not using it at all).
 
 
 \section{Proposal}
-Nuestra propuesta pretende probar los programas en MiniZinc (lenguaje de lógica de restricciones) que implementan problemas de planificación, por seguir un esquema fijo y conocido. Para ello, se propone, por un lado, utilizar la prueba metamórfica, incluyendo el diseño e implementación de relaciones metamórficas en el contexto de estos programas, y aplicarlas para obtener un mejor conjunto de casos de prueba, que el original dado. Así mimso, se propone, aplicar la prueba de mutaciones, que al no existir un sistema de mutación para este lenguaje de programación, se pretende diseñar los opradores de mutación apropiados, implem,entar y aplicar, para obtener mutantes qeu nos permitan probar el conjunto de casos de prueba. Posteriormente, evaluaremos tanto las relaciones metamórficas como los operadores de mutación.
+This proposal aims to evaluate MiniZinc programs, which implement scheduling problems according to a fixed scheme, using two testing methodologies. Firstly, we will employ metamorphic testing, designing and implementing metamorphic relations to generate enhanced test suites. Secondly, we will apply mutation testing. Given the absence of an existing mutation system for MiniZinc, we will develop and implement appropriate mutation operators to create mutants for evaluating the effectiveness of the test suites. Finally, we will assess the efficacy of both the metamorphic relations and the mutation operators.
 
 \subsection{Mutation operators for MiniZinc}
 %%%  Hecho***Explicar los operadores por categorías: un apartado para cada categoría: básicos, específicos de MiniZinc y específicos del problema.
@@ -437,8 +442,7 @@ CSWAP: Este operador intercambia los parámetros 2 y 3, de la función de \textt
 
 \subsection{Metamorphic relations for scheduling problems}
 
-Proponer las reglas metamórficas y justificarlas.
-Falta definir las relaciones metamórficas: MR1, MR2, MR3, etc.
+%Proponer las reglas metamórficas y justificarlas.
 
 
 This section exposes the MRs that we propose to detect possible errors
@@ -658,13 +662,15 @@ describes the program on which the experiments will be conducted.
 
 Table~\ref{tab:Op-MiniZinc} showed a significant number of mutation operators for the MiniZinc constraint programming language. Some of these operators are generic (being focused on arithmetic and logical operators), whereas some are specific to MiniZinc (E2F and F2E swap \texttt{exists} and \texttt{forall}, and CSWAP specifically targets the MiniZinc \texttt{cumulative} function).
 
-% mover a partir de aquí a S2.3
+\begin{comment}
+% mover a partir de aquí a S2.3. HECHO
 
 While these operators target different possible defects, they also incur a cost in the mutation testing process: their mutants need to be generated, and test cases have to be run against them. It is known from the literature that \emph{selective mutation testing} (using only some of the mutants) can have similar testing effectiveness as the full set of mutation operators, for a fraction of the cost~\cite{Mresa99OpMut}.
 
 The literature has also recognised that not all mutants are of the same value: some mutants are killed by most test cases we can come up with, whereas others require very specific test cases, and others are equivalent to the test program. Specifically, Papadakis et al.\ argued against using \emph{subsumed mutants} on experimental studies based on mutation testing, as they could skew the results~\cite{papadakis_threats_2016}. According to Ammann et al.~\cite{ammann_establishing_2014}, mutant $x$ dynamically subsumes mutant $y$ if $x$ has been killed and every test that kills $x$ also kills $y$. These subsumed mutants are redundant for the purposes of designing test cases, and can be safely discarded (e.g. by refining the definition of the mutation operator, or not using it at all).
 
 % fin de trasfondo para S2.3
+\end{comment}
 
 Due to the above reasons, we are interested in identifying the subset of the operators in Table~\ref{tab:Op-MiniZinc} that produce the most useful mutants.
 For this purpose, we will use the greedy subsuming mutant identification algorithm from Papadakis et al.~\cite{papadakis_threats_2016}.
@@ -714,12 +720,33 @@ Por cada pregunta, se ponen los resultados en bruto, y luego se responden las pr
     \label{tab:opstats-nodups}
 \end{table}
 
-* ¿cuál es el comportamiento de los distintos tipos de mutantes propuestos (son difíciles de matar? están subsumidos unos por otros? etc.)?
+33 of the 43 operators in Table~\ref{tab:Op-MiniZinc} were applicable to the program under test (\texttt{rcpsp.mzn}), generating 76 mutants. The starting test suite (provided by the original developers) killed 68 of those mutants, leaving 8 surviving mutants. Later tests produced by the metamorphic relations (analysed in later research questions) killed 6 more, leaving 2 mutants which were manually analyzed and found to be equivalent.
 
-Se han aplicado 33 de los 43 operadores de mutación anteriormente definidos en la tabla~\ref{tab:Op-MiniZinc} al modelo de programa elegido (\texttt{rcpsp.mzn}), generándose un total 76 mutanes. Tras la ejecución del conjunto de datos iniciales procedentes del repositorio....¿cuántos casos de prueba?, se han matado 68 mutantes, quedando vivos 8, que tras analizarlos, 2 de ellos han resultado ser equivalentes, como se muestra en la tabla~\ref{tab:mutant-counts}. Por lo que la puntuación de mutación en la primera ronda es del 91.8\% .
+Table~\ref{tab:opstats-nodups} displays the results of applying the original version of Papadakis' subsuming mutant identification algorithm. It shows, for each operator, the number of mutants that survived, that duplicated other mutants (i.e.\ being killed by the same tests), that were subsumed by other mutants, and that were in the subsuming set (i.e.\ mutants which subsume others and are not subsumed by any other mutant). It can be seen that the 26 subsuming mutants were produced by only 13 of the 33 applicable operators. There were very few subsuming mutants outside of the classic arithmetic and relational operators (1 from D2C and 1 from F2E), and the CSWAP operator only produced 1 duplicated mutant. Unfortunately, the fact that Papadakis' algorithm discarded the 37 duplicated mutants prior to detecting subsuming mutants meant that a significant number of subsumption relationships were not considered.
 
-\textbf{¿Qué operadores de mutación son más efectivos para detectar defectos en lenguajes con restricciones?}
-Respecto a  los 33 operadores de mutación aplicados, los mutantes que quedan vivos en esta primera ronda, son generados por los operadores: C2D, EQ2LE, GT2NE, LT2GT y NE2GT. De ellos uno es de expresiones lógicas y el resto de expresiones relacionales. Se puede observar que los operadores específicos del lenguaje MiniZinc aplicados: CSWAP(intercambio de los parámetros 2 y 3 de \texttt{cumulative}) y F2E(sustituye la aparición de un cuantificador lógico \texttt{forall} por un cuantificador  \texttt{exists}), han generado mutantes que han sido todos matados por el conjunto de casos de prueba inicial.   Por lo que se deduce que son efectivos en detectar errores en este tipo de programas.
+\begin{table}
+    \centering
+    \input{Data/V8_inSubsuming_sampleDups}
+    \caption{Operator statistics over 30 runs of our variant of Papadakis' subsuming mutant identification algorithm which randomly selects a representative among each set of duplicated mutants. Only operators which produced subsuming mutants in at least one run are shown. $O$ is the set of operators that produced subsuming mutants, and $M$ is the set of subsuming mutants. ``Useful'' operators should appear most of the time in $O$ and be part of smaller families of subsuming operators.}
+    \label{tab:opstats-dups}
+\end{table}
+
+Table~\ref{tab:opstats-dups} shows the results over 30 runs of our variant of Papadakis' algorithm, which selects randomly one mutant from each set of duplicated mutants as its representative for computing subsuming relationships.
+For each run, we compute the set $O$ of operators that produced at least one of the $M$ subsuming mutants, and we record the sizes of both $O$ and $M$.
+We can then compute, for each operator, in how many runs they were part of $O$, and what were the minimum sizes of $O$ and $M$ in those runs.
+The intuition is that a ``useful'' operator should belong to $O$ in at least most, if not all, of the runs, and that it should be part of a smaller set of operators and/or subsuming mutants.
+We can extract several results from this table:
+
+\begin{itemize}
+\item There is a core set of 9 mutation operators which were part of $O$ in all runs: A2S, A2M, A2DV, LE2GT, LE2NE, LE2GE, LE2EQ, GT2EQ, and D2C. This suggests they are crucial operators which should always be enabled.
+
+\item The next most useful operator is GT2NE, as it was part of $O$ in 15 of the 30 runs. GT2LT is close (being in $O$ during 14 runs), but GT2NE was part of smaller sets of subsuming operators (up to 10 operators) compared to GT2LT (which required at least 11 operators).
+
+\item C2D would be the fourth most useful operator, being in $O$ during 10 of the 30 runs and requiring the use of at least 11 operators. It did result in the largest sets of subsuming mutants (at least 42), although this is not significantly more than the 40 or 41 of the other operators.
+\end{itemize}
+
+In a sense, these results suggest that the traditional arithmetic and relational operators are sufficient, and that we may be even able to limit ourselves to a smaller subset of them.
+The logical, quantifier, and operator swapping operators did not contribute significant value beyond those of the traditional operators.
 
 \subsection{\rqmetamorphic: impact of follow-up test cases}
 
