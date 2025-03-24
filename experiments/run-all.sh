@@ -36,3 +36,6 @@ python 03-within-subsuming.py sample-duplicated/*-stats.csv --output V8_inSubsum
 
 # Produces per-operator stat table
 python 04-opstats-table.py V8_operatorStats_noDups.csv --output V8_operatorStats_noDups.tex
+
+# Produces table for number of times mutants are in the subsuming set
+python 05-within-subsuming-table.py V8_inSubsuming_sampleDups.csv --output V8_inSubsuming_sampleDups.tex

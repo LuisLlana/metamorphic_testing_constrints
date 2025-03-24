@@ -1,0 +1,21 @@
+\begin{tabular}{lrrrr}
+    \toprule
+    Operator & \rotatebox{90}{Runs $\in O$} & \rotatebox{90}{$\text{min}(|O|)$} & \rotatebox{90}{$\text{min}(|M|)$} \\
+    {% for opfamily in opsets %}
+    {% set ns = namespace(rule_produced=false) %}
+    % family start
+      {% for oprow in opfamily %}
+      % row start
+        {% for op in oprow %}
+            {% if op in data.keys() %}
+            {% if not ns.rule_produced %}
+            \midrule
+            {% set ns.rule_produced = true %}
+            {% endif %}
+            {{ op }} & {{ data.get(op)['count_in_subsuming'] }} & {{ data.get(op)['min_set_size']}} & {{ data.get(op)['min_individuals'] }} \\
+            {% endif %}
+        {% endfor %}
+      {% endfor %}
+    {% endfor %}
+    \bottomrule
+\end{tabular}
