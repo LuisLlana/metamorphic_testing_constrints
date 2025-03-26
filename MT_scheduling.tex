@@ -441,7 +441,7 @@ CSWAP: Este operador intercambia los parámetros 2 y 3, de la función de \textt
 \end{comment}
 
 \subsection{Metamorphic relations for scheduling problems}
-
+\label{sec:def_MT}
 %Proponer las reglas metamórficas y justificarlas.
 
 
@@ -455,7 +455,7 @@ $i_{1}$, $o_{1}$ the output corresponding to $i_{1}$, and $o_{2}$ the
 following-up output that is the output of $i_{2}$. A valid
 implementation, a model in our case, should make true the MR.
 
-\subsubsection{MR1. Sequentially of all tasks}
+\subsubsection{\mr{1}. Sequentially of all tasks}
 
 Let us consider a scheduling problem instance $i_1 = (T, P, D, \prec, R,
 L, \dln)$ such than $|P|=1$ and $\dln\geq\sum_{i=1}^{n}D(t_{i},p_{1})$.
@@ -472,7 +472,7 @@ $o_{2}=\sum_{i=1}^{|T|}D(t_{i})$.
 \begin{framed}
   \begin{displaymath}
       \begin{array}{l}
-        MR_{1}(i_1,i_2,o_{1},o_{2}):\\
+        \mr{1}(i_1,i_2,o_{1},o_{2}):\\
         \hskip 1em i_1=(T,D,\prec,R,L,\dln)\wedge  \\
         \hskip 1em i_2=mr_1(i_1)\wedge o_{1}=\sol(i_{1})\wedge o_{2}=\sol(i_2)\\
       \hskip 1em \wedge o_{1}<\infty\wedge \dln>=\sum_{i=1}^{|T|}D(T(i)) \\
@@ -486,7 +486,7 @@ $o_{2}=\sum_{i=1}^{|T|}D(t_{i})$.
 
 
 
-\subsubsection{MR2. Add inverse precedence}
+\subsubsection{\mr{2}. Add inverse precedence}
 The idea of this MR is that if we introduce a dependency that
 introduce a cycle in a scheduling problem instance with a solution,
 then the new problem has no solutions. Formally,
@@ -504,7 +504,7 @@ $o_{2}=\infty$.
 \begin{framed}
   \begin{displaymath}
       \begin{array}{l}
-    MR_{2}(i_1,i_2,o_{1},o_{2}):\\
+    \mr{2}(i_1,i_2,o_{1},o_{2}):\\
       \hskip 1em i_1=(T,P,D,\prec,R,L,\dln)\wedge  \\
       \hskip 1em  i_2=mr_2(i_1)\wedge o_{1}=\sol(i_{1})\wedge o_{2}=\sol(i_2)\\
       \hskip 1em \wedge o_{1}<\infty
@@ -533,7 +533,7 @@ $o_{2}=\infty$.
 
 
 
-\subsubsection{MR3. Extreme duration}
+\subsubsection{\mr{3}. Extreme duration}
 The idea of this rule is that if we modify the duration long enough,
 the whole scheduling will take longer. Let us consider
 $i_{1}=(T, P, D, \prec, R, L, \dln)$, and sum of the duration
@@ -557,7 +557,7 @@ If $o_{1}<\infty$ then $o_{1}<o_{2}<\infty$.
 \begin{framed}
   \begin{displaymath}
       \begin{array}{l}
-    MR_{3}(i_1,i_2,o_{1},o_{2}):\\
+    \mr{3}(i_1,i_2,o_{1},o_{2}):\\
       \hskip 1em i_1=(T,P,D,\prec,R,L,\dln) \wedge  \\
       \hskip 1em  i_2=mr_3(i_1)\wedge o_{1}=\sol(i_{1})\wedge o_{2}=\sol(i_2)\\
       \hskip 1em \wedge o_{1}<\infty
@@ -602,7 +602,7 @@ If $o_{1}<\infty$ then $o_{1}<o_{2}<\infty$.
 
 
 
-\subsubsection{MR4. More resources}
+\subsubsection{\mr{4}. More resources}
 This rule establishes that if we take more resources, the
 time required to complete all tasks is, at most, the original one.
 Let us consider
@@ -620,7 +620,7 @@ If $o_{1}<\infty$ then $o_{2}\leq o_{1}$.
 \begin{framed}
   \begin{displaymath}
       \begin{array}{l}
-    MR_{4}(i_1,i_2,o_{1},o_{2}):\\
+    \mr{4}(i_1,i_2,o_{1},o_{2}):\\
       \hskip 1em  i_1=(T,P,D,\prec,R,L,\dln) \wedge\\
       \hskip 1em  i_2=mr_3(i_1)\wedge o_{1}=\sol(i_{1})\wedge o_{2}=\sol(i_2)\\
       \hskip 1em \wedge o_{1}<\infty
@@ -825,9 +825,7 @@ S2M         &   1       &       0       &       1       \\
 % Operador segunda vuelta       Localización op MR3 ¿Qué quiere decir?
 Al aplicar MR3 al conjunto de casos de prueba inicial, se obtiene un conjunto de casos de pruebas siguientes, que se ejecutan contra los 6 mutantes que aún quedan vivos, obteniéndose como resultado que estos casos de prueba matan a los mutantes restantes, por lo que se consigue matar al 100\% de los mutantes, como se puede observar en la tabla~\ref{tab:mutant-counts}.
 
-\subsection{\rqidentifying: features of mutation-effective metamorphic relations}
-
-SONIA: poner análisis de lo efectivos que han sido los follow-up tests de cada MR, y ver si las MRs que han sido efectivas compartene ciertas características (por ejemplo, concentrarse en ciertas partes del problema).
+\input{answer-rq3}
 
 \begin{table}
     \centering
