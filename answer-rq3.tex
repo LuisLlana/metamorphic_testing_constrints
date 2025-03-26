@@ -1,0 +1,27 @@
+\subsection{\rqidentifying: features of mutation-effective metamorphic relations}
+The definition and explanation of the metamorphic rules are in
+Section\ref{sec:def_MT}. In this section, we begin how each
+metamorphic rule affects to each part or the \lstinline|rcpsp.mzn|
+listed in~\ref{lst:minizinc-rcpsp}. The constraints of the programs
+have been divided into 4 groups:
+\begin{enumerate}
+\item\label{item:precdence} Precedence constraints.
+\item\label{item:redundant} Redundant non-overlapping constraints.
+\item\label{item:cumulative} Cumulative resource constraints.
+\item\label{item:makespan} Makespan constraints.
+\end{enumerate}
+
+Según los follow-up tests de las MRs la más efectiva es la \mr{3} que mata a 63, después \mr{4} a 48. Después compreobamos que las \mr{1} y \mr{2} son poco eficientes pues no matan ni a la mitad de los mutantes. 
+\mr{1} mata a 24 mutantes y  \mr{2}  a 6.
+
+The metamorphic rule \mr{1} only detects defects in the precedence, redundant non-overlapping and cumulative resource constraints.
+\mr{2} solo tiene efecto sobre Precedence constraints, mientras que \mr{3} y \mr{4} tienen efecto en los 4 grupos. 
+
+
+
+
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "MT_scheduling"
+%%% End:
