@@ -687,13 +687,31 @@ A ``useful'' operator would be one which contributes a subsuming mutant in most 
 % Se registra el número de mutantes generados en total identificando, los operadores de mutación que los han generado. Es importante analizar también el efecto de los diferentes mutantes generados, y a través de qué operador de mutación se ha generado. Es decir, si unos mutantes mueren con más facilidad o son más difíciles de matar que otros. Cuántos  mueren con el conjunto inicial de casos de prueba y cuántos permanecen vivos, analizando estos últimos, manualmente para detectar posibles mutantes equivalentes, que no se pueden matar. Obtener la tasa de mutación, definida como el cociente entre el número de mutantes muertos y la diferencia entre el total  de mutantes generados y el número mutantes equivalentes.
 % Una tasa de mutación del 100\% indica que el conjunto de casos de prueba es de calidad, pues es capaz de matr todos los mutantes.
 
-\paragraph{\rqmetamorphic} \emph{¿Cómo mejora la cobertura de defectos combinar las pruebas de mutación la prueba metamórfica? ¿En qué medida? ¿Cuánto mejora el conjunto de casos de prueba antes y después de aplicar las relaciones metamórficas?}
+\paragraph{\rqmetamorphic} \emph{How does combining mutation testing
+  with metamorphic testing improve defect coverage? To what extent?
+  How much does the test suite improve before and after applying
+  metamorphic relations?}
 
-Puesto que la prueba metamórfica se aplica para mejorar la cobertura de mutación, el objetivo es obtener nuevos casos de prueba que maten mutantes, cuyos casos iniciales no mataban mutantes, obteniendo un conjunto de casos de prueba más completo y por tanto, de mejor calidad. Por tanto, para responder a esta cuestión es necesario medir la mejora que aporta la prueba metamórfica al conjunto inicial
+Since metamorphic testing is applied to improve mutation coverage, the
+goal is to obtain new test cases that kill mutants whose initial cases
+did not, resulting in a more comprehensive and, therefore,
+higher-quality test suite. Thus, to answer this question, it is
+necessary to measure the improvement that metamorphic testing brings
+to the initial suite.
 
-\paragraph{\rqidentifying} \emph{¿Existen características comunes en las relaciones metamórficas más efectivas para programas con restricciones, especialmente para programas con restricciones que especifican problemas de scheduling?}
+\paragraph{\rqidentifying}
+\emph{Are there more effective common features in the metamorphic
+  rules for constraint programming, especially for scheduling
+  problems?}
 
-Se describe la forma en que se han diseñado las relaciones metamórficas, identificando características comunes de los programas de scheduling y del lenguaje MiniZinc en particular, como lenguaje de restricciones. Este enfoque se basas en las investigaciones y revisiones sistemáticas que se han hecho sobre esta técnica que apuntan a la influencia de la lógica del programa en el diseño e implementación  de las relaciones metamórficas
+We describe the way we have designed the metamorphic rules,
+identifying common features in the RCPSP problem within constraint
+programming, particularly in MiniZinc. This approach is based on
+research into this technique, which reveals the influence of the
+program's logic on the design and implementation of the metamorphic
+rules.
+
+% Se describe la forma en que se han diseñado las relaciones metamórficas, identificando características comunes de los programas de scheduling y del lenguaje MiniZinc en particular, como lenguaje de restricciones. Este enfoque se basas en las investigaciones y revisiones sistemáticas que se han hecho sobre esta técnica que apuntan a la influencia de la lógica del programa en el diseño e implementación  de las relaciones metamórficas
 
 %* cuál es el comportamiento de los distintos tipos de mutantes propuestos (son difíciles de matar? están subsumidos unos por otros? etc.)?
 
