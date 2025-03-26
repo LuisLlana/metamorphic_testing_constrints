@@ -10,7 +10,15 @@ have been divided into 4 groups:
 \item\label{item:cumulative} Cumulative resource constraints.
 \item\label{item:makespan} Makespan constraints.
 \end{enumerate}
-The metamorphic rule \mr{1} only detects defects int the Precedence constratints
+
+Según los follow-up tests de las MRs la más efectiva es la \mr{3} que mata a 63, después \mr{4} a 48. Después compreobamos que las \mr{1} y \mr{2} son poco eficientes pues no matan ni a la mitad de los mutantes. 
+\mr{1} mata a 24 mutantes y  \mr{2}  a 6.
+
+The metamorphic rule \mr{1} only detects defects in the precedence, redundant non-overlapping and cumulative resource constraints.
+\mr{2} solo tiene efecto sobre Precedence constraints, mientras que \mr{3} y \mr{4} tienen efecto en los 4 grupos. 
+
+
+
 
 
 %%% Local Variables:
