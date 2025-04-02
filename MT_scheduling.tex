@@ -128,11 +128,22 @@ Falta terminar
 
 
 
-Importancia de probar el resolvedor y/o las reglas.
+%Importancia de probar el resolvedor y/o las reglas.
 
-Contribución de este artículo: conjunto de operadores de mutación para MiniZinc, definición de reLaciones metamórficas para problemas de planificación implementados en MiniZinc, y su evaluación en un problema modelo de planificación, consiguiendo matar a todos los mutantes no equivalentes. Estudio de la efectividad los operadores de mutación diseñados e implementrados y de las relaciones metamórficas diseñadas e implementadas.
+The main contributions of this paper are:
+\begin{itemize}
+    \item Testing scheduling programs as a set of constraints implemented in MiniZinc using several software testing techniques.
+    \item Design and implementation of metamorphic relations for testing scheduling programs with metamorphic testing.
+    \item Design and implementation of mutation operators for MiniZinc, for testing programs in this language using mutation testing.
+    \item Application of mutation testing to MiniZinc programs.
+    \item Application of metamorphic testing to MiniZinc programs to improve the test case suite.
+    \item Analysis of the effectiveness of mutation operators.
+    \item Analysis of the effectiveness of implemented metamorphic relations.
+\end{itemize}
 
-Esquema del resto del artículo.
+%Esquema del resto del artículo.
+This paper is structured as follows: section 2 describes the background and definitions used in the rest of the paper, section 3 explains the proposal presented, section 4 follows with the methodology used for the experiments, followed by the results obtained and the discussion of the results in section 5. Section 6 describes the threats to validity, and finally, the conclusions and future work.
+
 
 \section{Background}
 
@@ -277,34 +288,33 @@ This proposal aims to evaluate MiniZinc programs, which implement scheduling pro
 
 %  Hecho. Listar los operadores, citando como base el conjunto mínimo de Fortran/Mothra, y luego añadiendo cosas específicas de MiniZinc.
 %***Operadores de mutación: Carmina
-En base a cualquier sistema de mutación de cualquier lenguaje, se han diseñado e implementado un conjunto de operadores de mutación para poder generar el conjunto de mutantes necesario para aplicar esta técnica.
-Para la implementación de este conjunto de operadores inicial para MiniZinc, se ha considerado la investigación existente sobre el tema, y especialmente,  sobre un conjunto de operadores de mutación suficiente o mínimo~\cite{Offutt96OpMut,Mresa99OpMut,PapadakisM10} para hacer más eficiente la aplicación de la técnica de prueba de mutación. Teniendo encuenta estos trabajos, se han implementado operadores de mutación de expresiones aritméticas, lógicas y relacionales, comunes  a la mayoría de los lenguajes de programación. Así mismo, en~\cite{Mresa99OpMut} se destaca que es importante tener en cuenta las características del lenguajes y el contexto en el que se aplica. De esta forma, teniendo en cuenta que MiniZinc es un lenguaje declarativo (a diferencia de C), se han implementado operadores propios de este lenguaje, en los que se realiza una sustitución de los cuantaificadores lógicos, como posible error del programador, que podría confundirse al escribir un cuantificador universasl por un cuantificador existencial, o viceversa.  Así mismo, para tener en cuenta el contexto en el que se aplica la prueba de mutación en este caso, se ha considerado los programas que implementan problemas de scheduling en MiniZinc. Este tipo de programas incluye una función denominada \texttt{cumulative}, que contiene un número de parámetros con significados diferentes, que si se intercambian pueden provocar errores en el resultado. Es por ello, que se ha implementado un operador específico para este posible error.\\
+For any mutation system of a programming language, a set of mutation operators is designed and implemented to generate the mutants required for applying this technique. To implement an initial set of operators for MiniZinc, we drew upon existing research, particularly focusing on identifying a sufficient or minimal set of mutation operators~\cite{Offutt96OpMut,Mresa99OpMut,PapadakisM10} to enhance the efficiency of mutation testing. Building upon these studies, we implemented mutation operators for arithmetic, logical, and relational expressions, which are common across most programming languages. Furthermore, as highlighted in~\cite{Mresa99OpMut} it is crucial to consider the language's characteristics and its application context. Accordingly, since MiniZinc is a declarative language (unlike C), we implemented language-specific operators that perform substitutions of logical quantifiers, addressing a potential source of programmer error such as confusing universal and existential quantifiers. Additionally, to account for the specific application context of mutation testing in this case, we focused on MiniZinc programs that implement scheduling problems. These programs often include a \texttt{cumulative}function with multiple parameters, whose incorrect ordering can lead to result errors. Therefore, we implemented a specific operator to detect this type of fault.\\
 
-Por tanto, específicamente, se han diseñado e implementado un total de 43 operadores de mutación, agrupados en 5 tipos: de expresiones aritméticas, de expresiones relacionales, de expresiones lógicas, de cuantificadores y de intercambio de parámetros. De dichos tipos, son operadores básicos y comunes de casi todos los lenguajes de programación, los relacionales, lógicos y aritméticos. Sin embargo, en este caso, además se han definido dos tipos de operadores específicos de Minizinc: los operadores de cuantificación y el operador de intercambio, que afecta a la función \texttt{cumulative} de MiniZinc. En la Tabla~\ref{tab:Op-MiniZinc} se describen los operadores de mutación para MiniZinc en el contexto de los problemas de scheduling, clasificados por categorías.
+Consequently, we designed and implemented a total of 43 mutation operators, categorised into five types: arithmetic expressions, relational expressions, logical expressions, quantifiers, and parameter exchange. The relational, logical, and arithmetic operators are fundamental and common to most programming languages. However, we also defined two MiniZinc-specific operator types: quantifier operators and the parameter exchange operator, which targets the \texttt{cumulative} function. Table~\ref{tab:Op-MiniZinc} details the mutation operators for MiniZinc within the context of scheduling problems, classified by these categories.
 
 %%%% Tabla operadores mutación
 %% [htb!]
 \begin{table*}[htb!]
-    \caption{Operadores de mutación para MiniZinc con problemas de scheduling}
+    \caption{Mutation operators for MiniZinc with scheduling problems}
     \label{tab:Op-MiniZinc}
     \centering
     \small
     \begin{tabular}{l p{1.5\columnwidth}r}
     \toprule
-      Operador & \hspace{3cm} Descripción \\
+      Operator & \hspace{3cm} Description \\
      \midrule
-     \multicolumn{2}{c}{Operadores de expresiones aritméticas} \\
+     \multicolumn{2}{c}{Arithmetic expression operators} \\
      \midrule
-     A2S,S2A & Sustituye un operador aritmético (+, -, *, div) por otro del mismo tipo.\\
+     A2S,S2A & Replaces an arithmetic operator (+, -, *, div) with an operator of the same type.\\
      A2M,M2A\\
      A2DV,DV2A\\
      M2S,S2M\\
      M2DV,DV2M\\
      S2DV,DV2S\\
      \midrule
-     \multicolumn{2}{c}{Operadores de expresiones relacionales} \\
+     \multicolumn{2}{c}{Relational expression operators} \\
      \midrule
-     LE2LT,LT2LE & Sustituye un operador relacional $(<, >, <=, >=, ==, !=)$ por otro del mismo tipo.\\
+     LE2LT,LT2LE & Replaces an relational operator $(<, >, <=, >=, ==, !=)$ with an operator of the same type.\\
      LE2GT,GT2LE\\
      LE2NE,NE2LE \\
      LE2GE,GE2LE \\
@@ -318,18 +328,18 @@ Por tanto, específicamente, se han diseñado e implementado un total de 43 oper
      EQ2NE,NE2EQ\\
 
      \midrule
-     \multicolumn{2}{c}{Operadores de expresiones lógicas} \\
+     \multicolumn{2}{c}{Logical expression operators} \\
      \midrule
-     C2D y  D2C & Sustituye un operador lógico ($\wedge$, $\vee$ ) por otro del mismo tipo.\\
+     C2D y  D2C & Replaces an logical operator ($\wedge$, $\vee$ ) with an operator of the same type.\\
      \midrule
-     \multicolumn{2}{c}{Operadores de intercambio de cuantificadores} \\
+     \multicolumn{2}{c}{Quantifier swap operators} \\
       \midrule
-      E2F & Sustituye la aparición de un cuantificador lógico \texttt{exists}  por un cuantificador \texttt{forall}.\\
-      F2E & sustituye la aparición de un cuantificador lógico \texttt{forall} por un cuantificador  \texttt{exists}.\\
+      E2F & Replaces the occurrence of a logical quantifier \texttt{exists}  with a quantifier \texttt{forall}.\\
+      F2E & Replaces the occurrence of a logical quantifier \texttt{forall} with a quantifier  \texttt{exists}.\\
      \midrule
-      \multicolumn{2}{c}{Operador de intercambio de parámetros} \\
+      \multicolumn{2}{c}{Parameter swap operator} \\
      \midrule
-     CSWAP & Intercambia los parámetros 2 y 3, de la función de \texttt{cumulative} de MiniZinc. \\
+     CSWAP & Swap parameters 2 and 3 of the MiniZinc \texttt{cumulative} function. \\
     \bottomrule
     \end{tabular}
     \end{table*}
@@ -682,7 +692,7 @@ We have to consider, however, that since this is the first version of the mutati
 
 In order to evaluate the usefulness of the various operators in the presence of duplicated mutants, we propose using a variant of Papadakis' algorithm where for each set of mutants that duplicate each other, a random element will be picked as its sole representative and used to compute subsuming relationships.
 Due to the stochasticity of this process, we will run this adapted algorithm 30 times, and then compute three aggregate metrics for each operator: how many times it contributed a subsuming mutant, the size of the smallest set of subsuming operators that it was part of, and the size of the smallest set of subsuming mutants it was part of.
-A ``useful'' operator would be one which contributes a subsuming mutant in most if not all of those runs, resulting in a smaller set of subsuming operators and/or subsuming mutants.
+A ``useful'' operator would be one which contributes a subsuming mutant in most if not all of those runs, resulting in a smaller set of operators that produce subsuming mutants, and/or a smaller set of subsuming mutants.
 
 % Se registra el número de mutantes generados en total identificando, los operadores de mutación que los han generado. Es importante analizar también el efecto de los diferentes mutantes generados, y a través de qué operador de mutación se ha generado. Es decir, si unos mutantes mueren con más facilidad o son más difíciles de matar que otros. Cuántos  mueren con el conjunto inicial de casos de prueba y cuántos permanecen vivos, analizando estos últimos, manualmente para detectar posibles mutantes equivalentes, que no se pueden matar. Obtener la tasa de mutación, definida como el cociente entre el número de mutantes muertos y la diferencia entre el total  de mutantes generados y el número mutantes equivalentes.
 % Una tasa de mutación del 100\% indica que el conjunto de casos de prueba es de calidad, pues es capaz de matr todos los mutantes.
@@ -849,7 +859,19 @@ NE2GT   & 1     & 1 \\
 \end{table}
 
 
+\section{Threats to validity}
+% https://link.springer.com/content/pdf/10.1007/978-3-662-69306-3.pdf
+%Threats to validity: internal and external.
+%Wohlin S14.4.4.
+In the following, we discuss the threats to the validity of the results of the experiments presented in the
+previous section.
 
+\subsection{Internal validity}
+Mutation operators were designed and implemented for mutation testing, following the recommendations of recent research in this area. Furthermore, improvement algorithms were applied, yielding promising results. Nonetheless, given that this is the initial set of mutation operators, further investigation is warranted to refine them. This may involve the development of novel mutation operators that are more pertinent to the problem domain or the characteristics of the programming language.
+
+Concerning metamorphic testing, metamorphic relations were developed, taking into account the problem context, to generate additional test cases that enhance the quality of the initial test suite, thus meeting the defined objective. However, there is potential for the design of further metamorphic relations that generate new test cases by considering alternative factors, and for the iterative application of existing metamorphic relations to previously generated test cases.
+
+\subsection{External validity}
 
 
 
