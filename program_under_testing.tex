@@ -8,9 +8,12 @@ Suite~\footnote{\url{https://github.com/MiniZinc/minizinc-benchmarks/blob/master
 and we have included it in \ref{lst:minizinc-rcpsp}.
 
 The inputs have been taken from the MiniZinc Challenge
-2013~\footnote{\url{https://github.com/MiniZinc/minizinc-benchmarks/tree/master/rcpsp/data_psplib}}. Due
-to the long time required to execute the code, we have selected the simplest
-dataset (J30), where all inputs contain 30 tasks.
+2013~\footnote{\url{https://github.com/MiniZinc/minizinc-benchmarks/tree/master/rcpsp/data_psplib}}. 
+Due to the fact that the RCPSP is an NP-hard problem,we expect long computations on each sample. We initially took the all the samples from the
+data set (J30, J60, J90, J120). 
+The experiments were executed on an Intel Xeon W-2235 CPU at 3.80GHz with 6 cores (two thread per core). To take advantage of the muti-core system, we made a pool of processes to execute the maximum number of experiments in parallel. After a week of processing, only 2.32\% of the experiments were executed.
+After this failed attempt, we decided to use the simplest
+dataset (J30), where all inputs contain 30 tasks. Furthermore, we decided to set a timeout for each experiment. We initially set a 30 seconds timeout, which resulted in 18\% of timeout experiments. The execution of all experiments took 2 days. Finally, we set a 300 seconds timeout, which resulted in 16.92\% of timeout experiments. The total execution of all experiments took 28 days. 
 
 %%% Local Variables:
 %%% mode: LaTeX
