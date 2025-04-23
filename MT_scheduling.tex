@@ -113,18 +113,17 @@ the State Research Agency (AEI) of the Spanish Ministry of Science and Innovatio
 
 \section{Introduction}
 
-Contexto de scheduling problems.
--------- Begin --------
-El Resource-Constrained Project Scheduling Problem (RCPSP) \cite{herroelen1998resource, abdolshah2014review,hartmann2022updated}
-This problem consist
-of A RCPSP consists of resources, tasks, and precedences between some tasks where resources have of a specific capacity and tasks need some capacity of some resource to be executed.
- Here, we consider resources with a constant discrete capacity over time and tasks with a constant discrete duration and resource requirements.
- The objective is to find a optimal schedule with respect to the earliest end time of the schedule where the tasks' resource requirements do not exceed the resource capacities to any time and each precedence is met.
+El Resource Constrained Project Scheduling Problem (RCPSP)  es un problema combinatorio NP-Hard que atrae la atención de investigadores  debido a su complejidad computacional \cite{herroelen1998resource, abdolshah2014review,hartmann2022updated}. El principal problema al abordar problemas NP-hard es el crecimiento exponencial de los recursos computacionales necesarios para resolverlos.
 
 
-Falta terminar
+The RCPSP consiste en planificar un conjunto de tareas que tienen una duración determinada y no puede interrumpirse.
+Entre las tareas existen restricciones de precedencia que fuerzan a algunas tareas a comenzar después de la finalización de otras.
+Además, procesar cada tarea requiere ciertos recursos, los cuales están disponibles en una cantidad limitada. Por lo tanto, se deben planificar las tareas teniendo en cuenta las restricciones de los recursos.
 
--------- end --------
+El objetivo del RCPSP consiste en encontrar la planificación de las tareas de manera que se minimice el tiempo total definido como makespan.
+Es decir, The objective is to find a optimal schedule with respect to the earliest end time of the schedule where the tasks' resource requirements do not exceed the resource capacities to any time and each precedence is met.
+
+
 
 
 
@@ -142,11 +141,11 @@ The main contributions of this paper are:
 \end{itemize}
 
 %Esquema del resto del artículo.
-This paper is structured as follows: section 2 describes the background and definitions used in the rest of the paper, section 3 explains the proposal presented, section 4 follows with the methodology used for the experiments, followed by the results obtained and the discussion of the results in section 5. Section 6 describes the threats to validity, and finally, the conclusions and future work.
+This paper is structured as follows: section \ref{sec:backg} describes the background and definitions used in the rest of the paper, section \ref{sec:proposal} explains the proposal presented, section \ref{sec:method} follows with the methodology used for the experiments, followed by the results obtained and the discussion of the results in section \ref{sec:result}. Section \ref{sec:threat} describes the threats to validity, and finally, the conclusions and future work in section \ref{sec:conclusion}.
 
 
 \section{Background}
-
+\label{sec:backg}
 
 
 \subsection{Scheduling problems in constraint programming}
@@ -184,7 +183,7 @@ A MiniZinc model can be seen as a program that solve a constraint
 problem. These programs (or models) the objects we are going to
 consider for testing: Implementation Under Testing (IUT).
 
-Scheduling problems are modeled with certain types of constraints.
+Scheduling problems are modelled with certain types of constraints.
 Specifically, we deal with the following constraints in this work:
 \textit{precedence constraints} where it is specified that a constraint
 must be executed before another; and the \textit{resource
@@ -280,14 +279,11 @@ The literature has also recognised that not all mutants are of the same value: s
 
 
 \section{Proposal}
+\label{sec:proposal}
 This proposal aims to evaluate MiniZinc programs, which implement scheduling problems according to a fixed scheme, using two testing methodologies. Firstly, we will employ metamorphic testing, designing and implementing metamorphic relations to generate enhanced test suites. Secondly, we will apply mutation testing. Given the absence of an existing mutation system for MiniZinc, we will develop and implement appropriate mutation operators to create mutants for evaluating the effectiveness of the test suites. Finally, we will assess the efficacy of both the metamorphic relations and the mutation operators.
 
 \subsection{Mutation operators for MiniZinc}
-%%%  Hecho***Explicar los operadores por categorías: un apartado para cada categoría: básicos, específicos de MiniZinc y específicos del problema.
-%% Hecho: Referencia: buscar revisión sistemática, o referencia primera de Fortran y Mothra
 
-%  Hecho. Listar los operadores, citando como base el conjunto mínimo de Fortran/Mothra, y luego añadiendo cosas específicas de MiniZinc.
-%***Operadores de mutación: Carmina
 For any mutation system of a programming language, a set of mutation operators is designed and implemented to generate the mutants required for applying this technique. To implement an initial set of operators for MiniZinc, we drew upon existing research, particularly focusing on identifying a sufficient or minimal set of mutation operators~\cite{Offutt96OpMut,Mresa99OpMut,PapadakisM10} to enhance the efficiency of mutation testing. Building upon these studies, we implemented mutation operators for arithmetic, logical, and relational expressions, which are common across most programming languages. Furthermore, as highlighted in~\cite{Mresa99OpMut} it is crucial to consider the language's characteristics and its application context. Accordingly, since MiniZinc is a declarative language (unlike C), we implemented language-specific operators that perform substitutions of logical quantifiers, addressing a potential source of programmer error such as confusing universal and existential quantifiers. Additionally, to account for the specific application context of mutation testing in this case, we focused on MiniZinc programs that implement scheduling problems. These programs often include a \texttt{cumulative}function with multiple parameters, whose incorrect ordering can lead to result errors. Therefore, we implemented a specific operator to detect this type of fault.\\
 
 Consequently, we designed and implemented a total of 43 mutation operators, categorised into five types: arithmetic expressions, relational expressions, logical expressions, quantifiers, and parameter exchange. The relational, logical, and arithmetic operators are fundamental and common to most programming languages. However, we also defined two MiniZinc-specific operator types: quantifier operators and the parameter exchange operator, which targets the \texttt{cumulative} function. Table~\ref{tab:Op-MiniZinc} details the mutation operators for MiniZinc within the context of scheduling problems, classified by these categories.
@@ -456,7 +452,7 @@ CSWAP: Este operador intercambia los parámetros 2 y 3, de la función de \textt
 
 
 This section exposes the MRs that we propose to detect possible errors
-related to modeling scheduling problems: specifically, errors
+related to modelling scheduling problems: specifically, errors
 that are located in precedence and resource sharing
 constraints. Each MR is a condition $MR$ that depends
 on 4 elements: $i_{1}$ a scheduling problem instance, $i_{2}$ the
@@ -643,6 +639,7 @@ If $o_{1}<\infty$ then $o_{2}\leq o_{1}$.
 
 
 \section{Methodology}
+\label{sec:method}
 %Listar research questions sobre las propuestas:
 In order to evaluate the proposed approach, which combines the two described
 software testing techniques (mutation testing and metamorphic
@@ -736,8 +733,9 @@ Explicar cómo se van a responder esas research questions: programas MiniZinc se
 
 
 \section{Results and discussion}
+\label{sec:result}
 
-Por cada pregunta, se ponen los resultados en bruto, y luego se responden las preguntas originales sobre los resultados.
+The results obtained in the experiments are analysed in this section, and the research questions are answered. Furthermore, the results are discussed.
 
 \subsection{\rqoperators: mutant operator effectiveness}
 
@@ -777,8 +775,6 @@ In a sense, these results suggest that the traditional arithmetic and relational
 The logical, quantifier, and operator swapping operators did not contribute significant value beyond those of the traditional operators.
 
 \subsection{\rqmetamorphic: impact of follow-up test cases}
-
-Aunque es un buen resultado el obtenido, se tratará de mejorar aplicando la técnica de pruebas metamórficas, obteniendo nuevos casos de prueba (casos de prueba siguientes) a través de las relaciones metamórficas diseñadas e implementadas.
 %\input{mutation-counts-before_mrs}
 \begin{table}
     \centering
@@ -832,8 +828,7 @@ S2M         &   1       &       0       &       1       \\
 %Después de esta evaluación, se analizan los operadores que todavía tienen mutantes vivos que son los 6 siguientes.
 %Se aplican MR3 a estos 6 operadores y se mueren todos.
 
-% Operador segunda vuelta       Localización op MR3 ¿Qué quiere decir?
-Al aplicar MR3 al conjunto de casos de prueba inicial, se obtiene un conjunto de casos de pruebas siguientes, que se ejecutan contra los 6 mutantes que aún quedan vivos, obteniéndose como resultado que estos casos de prueba matan a los mutantes restantes, por lo que se consigue matar al 100\% de los mutantes, como se puede observar en la tabla~\ref{tab:mutant-counts}.
+Despite the promising result obtained by applying the mutation testing technique to the initial test suite, Table ~\ref{tab:mutant-counts} (mutation score greater than 89\%), we will try to improve this result by applying the metamorphic testing technique, obtaining new test cases (follow-up test cases) through the MR designed and implemented mentioned in section~\ref{sec:def_MT}. From the designed MRs, specifically, by applying \mr{3} to the initial test suite, we obtain a set of follow-up test cases, which are executed against the 6 mutants that are still alive, obtaining as a result that these test cases kill the remaining mutants, thus killing 100\% of the mutants, as can be seen in table~\ref{tab:mutant-counts2}.
 
 \input{answer-rq3}
 
@@ -860,6 +855,7 @@ NE2GT   & 1     & 1 \\
 
 
 \section{Threats to validity}
+\label{sec:threat}
 % https://link.springer.com/content/pdf/10.1007/978-3-662-69306-3.pdf
 %Threats to validity: internal and external.
 %Wohlin S14.4.4.
@@ -867,15 +863,19 @@ In the following, we discuss the threats to the validity of the results of the e
 previous section.
 
 \subsection{Internal validity}
-Mutation operators were designed and implemented for mutation testing, following the recommendations of recent research in this area. Furthermore, improvement algorithms were applied, yielding promising results. Nonetheless, given that this is the initial set of mutation operators, further investigation is warranted to refine them. This may involve the development of novel mutation operators that are more pertinent to the problem domain or the characteristics of the programming language.
+Mutation operators were designed and implemented for mutation testing, following the recommendations of recent research in this area. Furthermore, improvement algorithms were applied, yielding promising results. However, given that this is the initial set of mutation operators, further investigation is warranted to refine them. This may involve the development of novel mutation operators that are more pertinent to the problem domain or the characteristics of the programming language.
 
 Concerning metamorphic testing, metamorphic relations were developed, taking into account the problem context, to generate additional test cases that enhance the quality of the initial test suite, thus meeting the defined objective. However, there is potential for the design of further metamorphic relations that generate new test cases by considering alternative factors, and for the iterative application of existing metamorphic relations to previously generated test cases.
 
 \subsection{External validity}
 
+Although the experiment has been carried out on a MiniZinc program that represents and includes the fundamental characteristics of any scheduling program, it is possible that when applying the software testing techniques used in this work with other particular programs that implement scheduling problems, different results may be obtained, although they are close to those obtained. It is therefore necessary to test with a larger number of programs that implement this problem in order to generalize the results. 
+
+Likewise, the program \texttt{rcpsp.mnz} was evaluated using a publicly available set of 480 test cases. Although this test suite was considered adequate for applying the proposed software testing techniques, balancing comprehensiveness with the associated costs of design, implementation, and execution, it is recognized that results may vary with different test suites. Consequently, further experimentation with additional test suites is recommended.
 
 
 \section{Conclusion and future work}
+\label{sec:conclusion}
 
 Resumen de lo presentado, y de las respuestas a las preguntas.
 
