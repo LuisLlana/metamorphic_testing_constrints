@@ -17,26 +17,8 @@ Metamorphic rule \mr{1} detects defects in all groups except
 cumulative resource constraints; \mr{2} detects defects in precedence
 constraints; and \mr{3} and \mr{4} detect defects in all groups.
 
-The metamorphic rules generated test cases that killed the 6 mutants that survived the initial test suite. 
+The metamorphic rules generated test cases that killed the 6 mutants that survived the initial test suite.
 
-\begin{table}[]
-    \centering
-    \begin{tabular}{l r rrrrrr}
-    \toprule
-         MR & \# killed & $m_1$ & $m_2$ & $m_3$ & $m_4$ & $m_5$ & $m_6$ \\
-         \midrule
-         % TODO: rellenar tabla
-         \mr{1} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\ 
-         \mr{2} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\ 
-         \mr{3} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\ 
-         \mr{4} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\ 
-         \bottomrule
-    \end{tabular}
-    \caption{Number of mutants killed by the follow-up test cases from each metamorphic rule, and whether they killed (1) or not (0) the 6 mutants that survived the initial test suite ($m_1 \cdots m_6$.}
-    \label{tab:mr-comparison}
-\end{table}
-
-\todo Comprobar: 4 son detectados por MR3, y las otras dos son detectados por MR1 y MR4. Poner tabla de los 
 
 The most effective rule is \mr{3},
 which detects 63 mutants out of 74 mutants,
@@ -45,6 +27,29 @@ mutants, \mr{1}, which detects 24 mutants, and \mr{2}, which detects
 six mutants. All the mutants detected by \mr{2} are also detected by
 the other rules. Additionally, there are two mutants detected by both \mr{1}
 and \mr{4} that are not detected by \mr{3}.
+Finally, the 6 mutants that survived the initial test suite are only
+detected by \mr{3}.
+
+% Esta tabla no tiene sentido. Los 6 mutantes supervivientes
+% solo son detectados por MR3
+% \begin{table}[]
+%     \centering
+%     \begin{tabular}{l r rrrrrr}
+%     \toprule
+%          MR & \# killed & $m_1$ & $m_2$ & $m_3$ & $m_4$ & $m_5$ & $m_6$ \\
+%          \midrule
+%          % TODO: rellenar tabla
+%          \mr{1} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\
+%          \mr{2} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\
+%          \mr{3} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\
+%          \mr{4} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\
+%          \bottomrule
+%     \end{tabular}
+%     \caption{Number of mutants killed by the follow-up test cases from each metamorphic rule, and whether they killed (1) or not (0) the 6 mutants that survived the initial test suite ($m_1 \cdots m_6$.}
+%     \label{tab:mr-comparison}
+% \end{table}
+
+
 %%% Local Variables:
 %%% mode: LaTeX
 %%% TeX-master: "MT_scheduling"
