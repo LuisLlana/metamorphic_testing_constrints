@@ -112,7 +112,7 @@ the State Research Agency (AEI) of the Spanish Ministry of Science and Innovatio
 \end{frontmatter}
 
 \section{Introduction}
-
+%%% TODO CArmina. Revisa Antonio inglés 
 El Resource Constrained Project Scheduling Problem (RCPSP)  es un problema combinatorio NP-Hard que atrae la atención de investigadores  debido a su complejidad computacional \cite{herroelen1998resource, abdolshah2014review,hartmann2022updated}. El principal problema al abordar problemas NP-hard es el crecimiento exponencial de los recursos computacionales necesarios para resolverlos.
 
 
@@ -274,6 +274,8 @@ Despite the fact that MT has been applied to multiple domains and programs ~\cit
 Mutation testing is a well-known and widely applied software testing technique. It enjoys broad acceptance within the academic community, demonstrating a certain maturity, and has been the subject of numerous publications~\cite{parsai2literature, PAPADAKIS2019275}. Essentially, it involves assessing the quality of a test suite by executing them against modified versions of the original program, known as mutants. These mutants are created by injecting common programmer faults into the original code. To generate these mutants, mutation operators are defined, which specify the changes to be made in the program. For example, arithmetic operators can replace one instance of an arithmetic operator with another of the same type (e.g., replacing 'a +' with 'a -', or vice versa). Implementing these mutation operators and generating numerous mutants can be computationally expensive. Consequently, these operators have been extensively studied for various programming languages. Research has shown, among other findings, that a reduced set of these operators can yield good results in most systems~\cite{Offutt96OpMut}.
 
 While these operators target different possible defects, they also incur a cost in the mutation testing process: their mutants need to be generated, and test cases have to be run against them. It is known from the literature that \emph{selective mutation testing} (using only some of the mutants) can have similar testing effectiveness as the full set of mutation operators, for a fraction of the cost~\cite{Mresa99OpMut}.
+% TODO (Carmina): introducir mutation score como una métrica común para evaluar conjuntos de
+% prueba utilizando mutation testing
 
 The literature has also recognised that not all mutants are of the same value: some mutants are killed by most test cases we can come up with, whereas others require very specific test cases, and others are equivalent to the test program. Specifically, Papadakis et al.\ argued against using \emph{subsumed mutants} on experimental studies based on mutation testing, as they could skew the results~\cite{papadakis_threats_2016}. According to Ammann et al.~\cite{ammann_establishing_2014}, mutant $x$ dynamically subsumes mutant $y$ if $x$ has been killed and every test that kills $x$ also kills $y$. These subsumed mutants are redundant for the purposes of designing test cases, and can be safely discarded (e.g. by refining the definition of the mutation operator, or not using it at all).
 
@@ -707,9 +709,11 @@ necessary to measure the improvement that metamorphic testing brings
 to the initial suite.
 
 \paragraph{\rqidentifying}
-\emph{Are there more effective common features in the metamorphic
+\emph{What are the most mutation-effective metamorphic
   rules for constraint programming, especially for scheduling
   problems?}
+
+% TODO explicar qué queremos decir con mutation-effective
 
 We describe the way we have designed the metamorphic rules,
 identifying common features in the RCPSP problem within constraint
@@ -866,6 +870,7 @@ previous section.
 Mutation operators were designed and implemented for mutation testing, following the recommendations of recent research in this area. Furthermore, improvement algorithms were applied, yielding promising results. However, given that this is the initial set of mutation operators, further investigation is warranted to refine them. This may involve the development of novel mutation operators that are more pertinent to the problem domain or the characteristics of the programming language.
 
 Concerning metamorphic testing, metamorphic relations were developed, taking into account the problem context, to generate additional test cases that enhance the quality of the initial test suite, thus meeting the defined objective. However, there is potential for the design of further metamorphic relations that generate new test cases by considering alternative factors, and for the iterative application of existing metamorphic relations to previously generated test cases.
+% TODO: añadir defensa de que con las MRs existentes ya se han matado todos los mutantes no equivalentes
 
 \subsection{External validity}
 

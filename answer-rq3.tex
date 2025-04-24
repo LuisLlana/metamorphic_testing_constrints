@@ -1,4 +1,5 @@
-\subsection{\rqidentifying: features of mutation-effective metamorphic relations}
+\subsection{\rqidentifying: mutation-effective metamorphic relations}
+
 The definition and explanation of the metamorphic rules are in
 Section~\ref{sec:def_MT}. In this section, we examine how each
 metamorphic rule affects each part of the \lstinline|rcpsp.mzn| listed
@@ -16,8 +17,28 @@ Metamorphic rule \mr{1} detects defects in all groups except
 cumulative resource constraints; \mr{2} detects defects in precedence
 constraints; and \mr{3} and \mr{4} detect defects in all groups.
 
-The metamorphic rules detect the 6 mutants that are not identified
-using only the mutation operators. The most effective rule is \mr{3},
+The metamorphic rules generated test cases that killed the 6 mutants that survived the initial test suite. 
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{l r rrrrrr}
+    \toprule
+         MR & \# killed & $m_1$ & $m_2$ & $m_3$ & $m_4$ & $m_5$ & $m_6$ \\
+         \midrule
+         % TODO: rellenar tabla
+         \mr{1} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\ 
+         \mr{2} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\ 
+         \mr{3} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\ 
+         \mr{4} & 24 & 1 & 1 & 0 & 0 & 0 & 0 \\ 
+         \bottomrule
+    \end{tabular}
+    \caption{Number of mutants killed by the follow-up test cases from each metamorphic rule, and whether they killed (1) or not (0) the 6 mutants that survived the initial test suite ($m_1 \cdots m_6$.}
+    \label{tab:mr-comparison}
+\end{table}
+
+\todo Comprobar: 4 son detectados por MR3, y las otras dos son detectados por MR1 y MR4. Poner tabla de los 
+
+The most effective rule is \mr{3},
 which detects 63 mutants out of 74 mutants,
 followed by \mr{4}, which detects 48
 mutants, \mr{1}, which detects 24 mutants, and \mr{2}, which detects
