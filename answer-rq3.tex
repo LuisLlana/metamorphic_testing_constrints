@@ -1,6 +1,6 @@
 \subsection{\rqidentifying: mutation-effective metamorphic relations}
 
-The definition and explanation of the metamorphic rules are in
+The definition and explanation of the metamorphic relations are in
 Section~\ref{sec:def_MT}. In this section, we examine how each
 metamorphic rule affects each part of the \lstinline|rcpsp.mzn| listed
 in~\ref{lst:minizinc-rcpsp}. The constraints of the programs are
@@ -17,18 +17,15 @@ Metamorphic rule \mr{1} detects defects in all groups except
 cumulative resource constraints; \mr{2} detects defects in precedence
 constraints; and \mr{3} and \mr{4} detect defects in all groups.
 
-The metamorphic rules generated test cases that killed the 6 mutants that survived the initial test suite.
-
-
-The most effective rule is \mr{3},
+In terms of mutation score, the most effective rule is \mr{3},
 which detects 63 mutants out of 74 mutants,
 followed by \mr{4}, which detects 48
 mutants, \mr{1}, which detects 24 mutants, and \mr{2}, which detects
 six mutants. All the mutants detected by \mr{2} are also detected by
-the other rules. Additionally, there are two mutants detected by both \mr{1}
+the other relations. Additionally, there are two mutants detected by both \mr{1}
 and \mr{4} that are not detected by \mr{3}.
-Finally, the 6 mutants that survived the initial test suite are only
-detected by \mr{3}.
+
+\mr{3} generated test cases that killed the 6 mutants that survived the initial test suite. The other metamorphic relations did not produce tests that killed those surviving mutants. % interpretación: estudiar por qué MR3 específicamente mata a esos seis mutantes - qué hay de especial en las pruebas que genera, y cómo se relacionan esas pruebas con los seis mutantes supervivientes?
 
 % Esta tabla no tiene sentido. Los 6 mutantes supervivientes
 % solo son detectados por MR3

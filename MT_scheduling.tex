@@ -113,35 +113,44 @@ the State Research Agency (AEI) of the Spanish Ministry of Science and Innovatio
 
 \section{Introduction}
 %%% TODO CArmina. Revisa Antonio inglés 
-El Resource Constrained Project Scheduling Problem (RCPSP)  es un problema combinatorio NP-Hard que atrae la atención de investigadores  debido a su complejidad computacional \cite{herroelen1998resource, abdolshah2014review,hartmann2022updated}. El principal problema al abordar problemas NP-hard es el crecimiento exponencial de los recursos computacionales necesarios para resolverlos.
+%%% Introducir la importancia de los problemas de scheduling y su uso en diferentes disciplinas y contextos: convendría tener citas a aplicaciones de ejemplo (fabricación, logística, gestión de proyectos, etc.)
+\begin{comment}
+    
 
+The Resource Constrained Project Scheduling Problem (RCPSP) is an NP-Hard combinatorial problem
+that attracts the attention of researchers due to its computational
+complexity \cite{herroelen1998resource, abdolshah2014review,hartmann2022updated}. 
+The main difficulty when dealing with NP-hard problems is the exponential growth of the computational resources needed to solve them.
 
-The RCPSP consiste en planificar un conjunto de tareas que tienen una duración determinada y no puede interrumpirse.
-Entre las tareas existen restricciones de precedencia que fuerzan a algunas tareas a comenzar después de la finalización de otras.
-Además, procesar cada tarea requiere ciertos recursos, los cuales están disponibles en una cantidad limitada. Por lo tanto, se deben planificar las tareas teniendo en cuenta las restricciones de los recursos.
+The RCPSP consists of planning a set of tasks that have a fixed duration and cannot be interrupted. Among the tasks, there are precedence constraints that force some tasks to start after the completion of others.
+In addition, processing each task requires certain resources, which are available in a limited amount. Therefore, tasks must be planned taking into account resource constraints.
 
-El objetivo del RCPSP consiste en encontrar la planificación de las tareas de manera que se minimice el tiempo total definido como makespan.
-Es decir, The objective is to find a optimal schedule with respect to the earliest end time of the schedule where the tasks' resource requirements do not exceed the resource capacities to any time and each precedence is met.
+The objective of the RCPSP is to find the scheduling of tasks in such a way that the total time defined as \textit{makespan} is minimized. In other words, the objective is to find an optimal schedule with respect to the earliest end time of the schedule where the tasks' resource requirements do not exceed the resource capacity at any time and each precedence is met.
+However, to solve this type of problem using software, it can be very practical to do so using a programming language with constraints, because of the ease of expressing them directly. One such language is MiniZinc \cite{nsbbdt07}, which, in addition to the constraint language, is available for several solvers, is free software, and has a community that updates and improves it frequently.
 
+In this context, this type of program needs to be tested. In other words, the challenge is to test software that implements scheduling problems in languages with constraints, in particular with MiniZinc.
 
+Although mutation testing is a mature and widely implemented and used software testing technique,
+as far as we know, there is still no mutation system for constraint programming, 
+especially for MiniZinc. This is why our proposal is novel.
+\end{comment}
 
+A fundamental and necessary task in software development is to test software using various techniques designed for this purpose \cite{amman:2008}. These techniques can be general or specifically tailored to particular programming languages or application domains. Furthermore, the approach to testing often differs based on whether or not the source code is accessible. One domain frequently addressed in programming is  scheduling, aiming to achieve optimal solutions under resource constraints. For such problems, declarative programming languages can be particularly advantageous, as they allow for a near direct implementation of the problem specification, with a solver that  searches or optimises potential solutions. While mature and reliable software testing techniques exist, some have not yet been extensively applied to testing programs in these declarative languages within the context of constraint satisfaction and optimisation. Certainly, mutation testing \cite{PAPADAKIS2019275}, with existing systems in various programming languages (e.g., C, C++, Java) across different paradigms, presents a promising opportunity. Therefore, implementing a mutation testing system for programs with constraints and evaluating the test suite quality represents a significant challenge and contribution. Meanwhile, metamorphic testing has proved to be a technique, although younger than mutation testing, with great development and success in recent years, even with events dedicated to it \cite{Xie:2019:3340651, Chen:2018:MTR:3177787.3143561}. It is particularly interesting to exploit, to improve the test suite, and as a technique in which the problem domain is taken into account.
 
-
-%Importancia de probar el resolvedor y/o las reglas.
-
-The main contributions of this paper are:
+Accordingly, for the above reasons, the main contributions of this paper are:
 \begin{itemize}
     \item Testing scheduling programs as a set of constraints implemented in MiniZinc using several software testing techniques.
     \item Design and implementation of metamorphic relations for testing scheduling programs with metamorphic testing.
-    \item Design and implementation of mutation operators for MiniZinc, for testing programs in this language using mutation testing.
-    \item Application of mutation testing to MiniZinc programs.
+    \item Design and implementation of mutation operators set for MiniZinc, for testing programs in this language using mutation testing.
+   % \item Application of mutation testing to MiniZinc programs.
+    \item  Experiments with a known scheduling problem (RPCSP) in combination with metamorphic relations for RCPSP.
     \item Application of metamorphic testing to MiniZinc programs to improve the test case suite.
-    \item Analysis of the effectiveness of mutation operators.
-    \item Analysis of the effectiveness of implemented metamorphic relations.
+    \item Analysis of the effectiveness of the mutation operators for MiniZinc.
+    \item Analysis of the effectiveness of the implemented metamorphic relations.
 \end{itemize}
 
 %Esquema del resto del artículo.
-This paper is structured as follows: section \ref{sec:backg} describes the background and definitions used in the rest of the paper, section \ref{sec:proposal} explains the proposal presented, section \ref{sec:method} follows with the methodology used for the experiments, followed by the results obtained and the discussion of the results in section \ref{sec:result}. Section \ref{sec:threat} describes the threats to validity, and finally, the conclusions and future work in section \ref{sec:conclusion}.
+This paper is structured as follows: Section~\ref{sec:backg} describes the background and definitions used in the rest of the paper, Section~\ref{sec:proposal} explains the proposal presented, Section~\ref{sec:method} follows with the methodology used for the experiments, followed by the results obtained and the discussion of the results in Section~\ref{sec:result}. Section \ref{sec:threat} describes the threats to validity, and finally, the conclusions and future work in Section~\ref{sec:conclusion}.
 
 
 \section{Background}
@@ -272,6 +281,14 @@ Despite the fact that MT has been applied to multiple domains and programs ~\cit
 %%% Review: PAPADAKIS2019275, parsai2literature
 %%% Operadores de mutacion: (1996) Offutt96OpMut, Mresa99OpMut, PapadakisM10, puig2010equivalencias
 Mutation testing is a well-known and widely applied software testing technique. It enjoys broad acceptance within the academic community, demonstrating a certain maturity, and has been the subject of numerous publications~\cite{parsai2literature, PAPADAKIS2019275}. Essentially, it involves assessing the quality of a test suite by executing them against modified versions of the original program, known as mutants. These mutants are created by injecting common programmer faults into the original code. To generate these mutants, mutation operators are defined, which specify the changes to be made in the program. For example, arithmetic operators can replace one instance of an arithmetic operator with another of the same type (e.g., replacing 'a +' with 'a -', or vice versa). Implementing these mutation operators and generating numerous mutants can be computationally expensive. Consequently, these operators have been extensively studied for various programming languages. Research has shown, among other findings, that a reduced set of these operators can yield good results in most systems~\cite{Offutt96OpMut}.
+
+In order to measure the quality of test suite with this technique, the \textit{mutation score} is often used. This widely used measure is defined as the number of killed mutants divided by the total number of mutants generated (total mutants minus equivalent mutants), expressed as a percentage:
+\begin{displaymath}
+  MS = K / (G-E)
+\end{displaymath}
+Then we take MS: mutation score, G: generated mutants, E: equivalent mutants.\\
+
+
 
 While these operators target different possible defects, they also incur a cost in the mutation testing process: their mutants need to be generated, and test cases have to be run against them. It is known from the literature that \emph{selective mutation testing} (using only some of the mutants) can have similar testing effectiveness as the full set of mutation operators, for a fraction of the cost~\cite{Mresa99OpMut}.
 % TODO (Carmina): introducir mutation score como una métrica común para evaluar conjuntos de
@@ -477,6 +494,7 @@ solution, that is $o_{1}<\infty$,
 then $i_{2}$ has a solution $o_{2}$ such that
 $o_{2}=\sum_{i=1}^{|T|}D(t_{i})$.
 
+% TODO: ver si se puede reducir el espacio entre la fórmula y el marco en el entorno
 \begin{framed}
   \begin{displaymath}
       \begin{array}{l}
@@ -653,7 +671,7 @@ describes the program on which the experiments will be conducted.
 \input{program_under_testing}
 
 
-% TO DO: programa bajo prueba? Sonia y Luis
+%DONE: programa bajo prueba? Sonia y Luis
 
 % \emph{explicar qué programas se van a usar para el estudio y por qué}\\
 % Aunque hay numerosos ejemplos de programas en MiniZinc que implementan problemas de schedulling, se ha obtado por utilizar un modelo de ejemplo  genérico denominado RCPSP (Resource-Constrained Project Scheduling Problem), que se encuentra en el repositorio \footnote{https://github.com/MiniZinc/minizinc-benchmarks/blob/master/rcpsp/rcpsp.mzn} y que contiene así mismo, numerosos casos de prueba de libre acceso. El listado~\ref{lst:minizinc-rcpsp} muestra el modelo utilizado.
@@ -710,17 +728,17 @@ to the initial suite.
 
 \paragraph{\rqidentifying}
 \emph{What are the most mutation-effective metamorphic
-  rules for constraint programming, especially for scheduling
+  relations for constraint programming, especially for scheduling
   problems?}
 
 % TODO explicar qué queremos decir con mutation-effective
 
-We describe the way we have designed the metamorphic rules,
+We describe the way we have designed the metamorphic relations,
 identifying common features in the RCPSP problem within constraint
 programming, particularly in MiniZinc. This approach is based on
 research into this technique, which reveals the influence of the
 program's logic on the design and implementation of the metamorphic
-rules.
+relations.
 
 % Se describe la forma en que se han diseñado las relaciones metamórficas, identificando características comunes de los programas de scheduling y del lenguaje MiniZinc en particular, como lenguaje de restricciones. Este enfoque se basas en las investigaciones y revisiones sistemáticas que se han hecho sobre esta técnica que apuntan a la influencia de la lógica del programa en el diseño e implementación  de las relaciones metamórficas
 
@@ -869,8 +887,8 @@ previous section.
 \subsection{Internal validity}
 Mutation operators were designed and implemented for mutation testing, following the recommendations of recent research in this area. Furthermore, improvement algorithms were applied, yielding promising results. However, given that this is the initial set of mutation operators, further investigation is warranted to refine them. This may involve the development of novel mutation operators that are more pertinent to the problem domain or the characteristics of the programming language.
 
-Concerning metamorphic testing, metamorphic relations were developed, taking into account the problem context, to generate additional test cases that enhance the quality of the initial test suite, thus meeting the defined objective. However, there is potential for the design of further metamorphic relations that generate new test cases by considering alternative factors, and for the iterative application of existing metamorphic relations to previously generated test cases.
-% TODO: añadir defensa de que con las MRs existentes ya se han matado todos los mutantes no equivalentes
+Concerning metamorphic testing, metamorphic relations were developed, taking into account the problem context, to generate additional test cases that enhance the quality of the initial test suite, thus meeting the defined objective. However, there is potential for the design of further metamorphic relations that generate new test cases by considering alternative factors, and for the iterative application of existing metamorphic relations to previously generated test cases. Nevertheless, with the metamorphic relations designed,, successfully generated test cases that kill all the mutants, and therefore the objective has been achieved.
+% DONE: añadir defensa de que con las MRs existentes ya se han matado todos los mutantes no equivalentes
 
 \subsection{External validity}
 
@@ -881,6 +899,8 @@ Likewise, the program \texttt{rcpsp.mnz} was evaluated using a publicly availabl
 
 \section{Conclusion and future work}
 \label{sec:conclusion}
+
+% TODO: Carmina para escribir la primera versión, Antonio revisa
 
 Resumen de lo presentado, y de las respuestas a las preguntas.
 
