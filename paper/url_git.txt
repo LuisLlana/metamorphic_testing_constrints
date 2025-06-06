@@ -1,6 +1,0 @@
-https://github.com/MiniZinc/specialization-examples.githttps://www.overleaf.com/project/6267c62741b555c8b65f1579
-
-https://github.com/LuisLlana/metamorphic_testing_constrints
-
-Ejemplo del GitHub: \url{https://github.com/MiniZinc/specialization-examples/tree/master/scheduling}
-
