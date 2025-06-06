@@ -1,0 +1,253 @@
+%%
+%% Copyright 2007-2020 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%% SP 2008/03/01
+%%
+%%
+%%
+%% $Id: elsarticle-template-num.tex 190 2020-11-23 11:12:32Z rishi $
+%%
+%%
+\documentclass[final,twocolumn]{elsarticle}
+%\documentclass[review,twocolumn, 3p]{elsarticle}  %Sonia ¿Qué es 3p?
+\usepackage[utf8]{inputenc}
+%\documentclass{cas-dc}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% For including figures, graphicx.sty has been loaded in
+%% elsarticle.cls. If you prefer to use the old commands
+%% please give \usepackage{epsfig}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+\usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+%% \usepackage{lineno}
+\usepackage{verbatim}
+\usepackage{framed}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+
+\usepackage{listings}  % code
+\usepackage{tikz}
+\usetikzlibrary{arrows,backgrounds,calc,positioning}
+
+
+
+%\newcolumntype{d}[1]{D{.}{.}{#1}}
+\tikzstyle{obj} = [
+%draw=black,
+%      line width=0.5pt,
+      anchor=center,
+      text centered,
+      rounded corners,
+%         fill=blue!20,
+%         minimum width=0.5cm,
+          minimum height=3mm,
+      text badly centered
+      ]
+\tikzstyle{ar} = [->, bend left]
+
+
+\tikzset{
+    mynode/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=yellow!50,very thick, inner sep=1em,
+    inner ysep=8pt, % El ancho de las cajitas
+    text centered, scale=0.8},
+    mynodeRed/.style={rectangle,rounded corners,draw=black, top color=red!50, bottom color=red!20,very thick, inner sep=1em,
+    inner ysep=8pt, % El ancho de las cajitas
+    %minimum size=3.5em,
+    text centered, scale=0.8},
+    mynodeGreen/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=yellow!50,very thick, inner sep=1em,
+    inner ysep=8pt, % El ancho de las cajitas
+    text centered, scale=0.8},
+    myarrow/.style={->, >=latex', shorten >=2pt},
+    mylabel/.style={text centered, fill=blue!20,scale=0.8}
+}
+
+%\lstset{
+%    breaklines=true,
+%    basicstyle=\footnotesize
+%}
+
+
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.multipart,chains,positioning,arrows,calc,arrows.meta}
+
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition} %% remove [theorem] for Unique numbering
+%\theoremstyle{plain}
+\newtheorem{example}[theorem]{Example} %% remove [theorem] for Unique numbering
+\newtheorem{definition}[theorem]{Definition} %% remove [theorem] for Unique numbering
+
+
+
+
+
+
+\newcommand{\unsat}[1] {\texttt{unSat(#1)}}
+\newcommand{\sat}[1] {\texttt{sat(#1)}}
+
+
+
+%Numbered environment defined with Newtheorem
+\usepackage{amsmath}
+
+\newtheorem{ResearchQuestion}{Research Question}[]
+
+
+
+
+%----------------------------------------------%
+% Syntax highlighting for MiniZinc in listings %
+%----------------------------------------------%
+
+\definecolor{lightgray}{rgb}{0.97, 0.97, 0.97}
+\definecolor{ForestGreen}{RGB}{34,106,46}
+
+\lstdefinelanguage{minizinc}{
+    morekeywords={
+        %% MiniZinc keywords
+        %%
+        ann, annotation, any, array, assert,
+        bool,
+        constraint,
+        else, elseif, endif, enum, exists,
+        float, forall, function,
+        if, in, include, int,
+        list,
+        minimize, maximize,
+        of, op, output,
+        par, predicate,
+        record,
+        set, solve, string,
+        test, then, tuple, type,
+        var,
+        where,
+        <, <=, >, >=,
+        +,-,
+        %% MiniZinc functions
+        %%
+        abort, abs, acosh, array_intersect, array_union,
+        array1d, array2d, array3d, array4d, array5d, array6d, asin, assert, atan,
+        bool2int,
+        card, ceil, combinator, concat, cos, cosh,
+        dom, dom_array, dom_size, dominance,
+        exp,
+        fix, floor,
+        index_set, index_set_1of2, index_set_2of2, index_set_1of3, index_set_2of3, index_set_3of3,
+        int2float, is_fixed,
+        join,
+        lb, lb_array, length, let, ln, log, log2, log10,
+        min, max,
+        pow, product,
+        round,
+        set2array, show, show_int, show_float, sin, sinh, sqrt, sum,
+        tan, tanh, trace,
+        ub, and ub_array,
+        %% Search keywords
+        %%
+        bool_search, int_search, seq_search, priority_search,
+        %% MiniSearch keywords
+        %%
+        minisearch, search, while, repeat, next, commit, print, post, sol, scope, time_limit, break, fail
+    },
+    sensitive=true, % are the keywords case sensitive
+    morecomment=[l][\em\color{ForestGreen}]{\%},
+    %morecomment=[s]{/*}{*/},
+    morestring=[b]",
+}
+
+%% Settings for listings
+%%
+\lstset{ %
+    language=minizinc,                  % the language of the code
+%    backgroundcolor=\color{lightgray},  % choose the background color; you must add
+                                        % \usepackage{color} or \usepackage{xcolor}
+    %basicstyle=\ttfamily\small,    % the size of the fonts that are used for the code
+    basicstyle=\ttfamily\small,    % the size of the fonts that are
+    aboveskip=3mm,
+    belowskip=1mm,
+    breakatwhitespace=false,            % sets if automatic breaks should only happen at whitespace
+    breaklines=true,                    % sets automatic line breaking
+    captionpos=b,                       % sets the caption-position to bottom
+    commentstyle=\color{ForestGreen},   % comment style
+    %deletekeywords={...},              % if you want to delete keywords from the given language
+    escapeinside={\%*}{*)},             % if you want to add LaTeX within your code
+    extendedchars=true,                 % lets you use non-ASCII characters; for 8-bits
+                                        % encodings only, does not work with UTF-8
+%    frame=single,                       % adds a frame around the code
+    keepspaces=true,                    % keeps spaces in text, useful for keeping indentation
+                                        % of code (possibly needs columns=flexible)
+    keywordstyle=\ttfamily\color{blue}, % keyword style
+%   keywordstyle=\bfseries\color{blue}, % keyword style
+    %morekeywords={*,...},              % if you want to add more keywords to the set
+    numbers=none,                       % where to put the line-numbers; possible values are (none, left, right)
+    %numbersep=5pt,                     % how far the line-numbers are from the code
+    %numberstyle=\tiny\color{Gray},     % the style that is used for the line-numbers
+    rulecolor=\color{black},            % if not set, the frame-color may be changed
+                                        % on line-breaks within not-black text (e.g. comments (green here))
+    showspaces=false,                   % show spaces everywhere adding particular
+                                        % underscores; it overrides 'showstringspaces'
+    showstringspaces=false,             % underline spaces within strings only
+    showtabs=false,                     % show tabs within strings adding particular underscores
+    %stepnumber=1,                      % the step between two line-numbers. If it's 1, each line will be numbered
+    stringstyle=\color{Red},            % string literal style
+    tabsize=2,                          % sets default tabsize to 2 spaces
+    title=\lstname                      % show the filename of files included with \lstinputlisting;
+                                        % also try caption instead of title
+}
+
+
+
+\newcommand{\dln}{\ensuremath{\mathit{dln}}}
+
+
+\newcommand{\calP}{{\cal P}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\sol}{\mathsf{sol}}
+
+\def\luisSays#1{{\color{red} Comentario Luis: #1}}
+\newcommand{\SPI}{\ensuremath{\mathit{SPI}}}
+
+\newcommand{\mr}[1]{\ensuremath{\mathit{MR}_{#1}}}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "MT_scheduling"
+%%% End:

@@ -1,0 +1,43 @@
+\newpage
+\subsection{Result and Discussion/ Experimental results}
+
+% [!htb]
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{l|c|c|c}
+
+    j30\_10\_01  &  rcpsp.dzn  & fu-cycle.dzn & fu-all-prec.dzn\\
+    makespan  & (original) &  & \\
+    \hline
+     rcpsp.mzn    & 41 & UNSAT & 157 \\
+     (original)   &  &  & \\
+     \hline
+    
+    MUT$\leq$-$<$.mzn & 45 & UNSAT & UNSAT \\
+     \hline
+    
+    MUTforall-exists  & 6 & 0& 6 \\
+     \hline
+    \end{tabular}
+    \caption{rows: codes (mutations); columns: data (follow-ups). UNSAT is the sort-name of UNSATISFIABLE }
+    \label{tab:outs}
+\end{table*}
+
+En la tabla \ref{tab:outs} hay que comparar:
+\begin{itemize}
+    \item MR1: Si se ponen todas las precedencias en secuencial (fu-all-prec.dzn) entonces el makespan (157) debe ser finito y mayor o igual al original rcpsp.dzn (41). Esto es lo que ocurre al ejecutar el código original (rcpsp.mzn).
+
+    El mutante MUT$\leq$-$<$.mzn se puede matar porque no es finito.
+
+    El mutante MUTforall-exists no se puede matar.
+
+    \item MR2: Si se crea un ciclo con las precedencias (fu-cycle.dzn), entonces debe ser UNSATISFIABLE. Esto es lo que ocurre al ejecutar el código original (rcpsp.mzn).
+
+    El mutante MUT$\leq$-$<$.mzn no se puede matar.
+
+    El mutante MUTforall-exists se puede matar pues tiene un resultado finito (0).
+
+\end{itemize}
+
+\newpage
+\newpage

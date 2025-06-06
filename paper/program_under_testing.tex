@@ -1,0 +1,25 @@
+\subsection{Program under study}
+The RCPSP consists of planning a set of tasks that have a fixed duration and cannot be interrupted. Among the tasks, there are precedence constraints that force some tasks to start after the completion of others. In addition, processing each task requires certain resources, which are available in a limited amount. Therefore, tasks must be planned taking into account resource constraints.
+
+The objective of the RCPSP is to find the scheduling of tasks in such a way that the total time defined as \textit{makespan} is minimized. In other words, the objective is to find an optimal schedule with respect to the earliest end time of the schedule where the tasks' resource requirements do not exceed the resource capacity at any time and each precedence is met.
+
+In order to test this novel approach to mutation and metamorphic
+testing in constraint programming, we have chosen the program
+\lstinline|rcpsp.mzn|, that is a standard version of
+the Resource-Constrained Project Scheduling Problem (RCPSP). The
+program is taken from the MiniZinc Benchmark
+Suite~\footnote{\url{https://github.com/MiniZinc/minizinc-benchmarks/blob/master/rcpsp/rcpsp.mzn}},
+and we have included it in \ref{lst:minizinc-rcpsp}.
+
+The inputs have been taken from the MiniZinc Challenge
+2013~\footnote{\url{https://github.com/MiniZinc/minizinc-benchmarks/tree/master/rcpsp/data_psplib}}. 
+Due to the fact that the RCPSP is an NP-hard problem~\cite{herroelen1998resource, abdolshah2014review,hartmann2022updated}, we expect long computations on each sample. We initially took the all the samples from the
+data set (J30, J60, J90, J120). 
+The experiments were executed on an Intel Xeon W-2235 CPU at 3.80GHz with 6 cores (two threads per core). To take advantage of the multi-core system, we made a pool of processes to execute the maximum number of experiments in parallel. After a week of processing, only 2.32\% of the experiments were executed.
+After this failed attempt, we decided to use the simplest
+dataset (J30), where all inputs contain 30 tasks. Furthermore, we decided to set a timeout for each experiment. We initially set a 30-second timeout, which resulted in 18\% of experiments timing out. The execution of all experiments took 2 days. Finally, we set a 300-second timeout, which resulted in 16.92\% of experiments timing out. The total execution of all experiments took 28 days. 
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "MT_scheduling"
+%%% End:
